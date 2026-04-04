@@ -3,677 +3,504 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ihsan Ul Haq and Sons General Store</title>
+    <title>Ihsan Ul Haq & Sons | Professional Supermarket</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-        body { font-family: 'Poppins', sans-serif; }
-        .product-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        .animate-slideInRight { animation: slideInRight 0.3s ease-out; }
+        .admin-tab-active { border-bottom: 4px solid #15803d; color: #15803d; font-weight: bold; }
+        .category-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="bg-gray-50">
 
-<nav class="bg-white shadow sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-        <div class="flex items-center gap-4">
-            <!-- APNA LOGO YAHAN REPLACE KARO -->
-            <!-- https://imgbb.com pe upload karke direct link paste karo -->
-            <img id="logo" src="https://via.placeholder.com/70x70/166534/ffffff?text=IH" alt="Logo" class="h-14 w-14 rounded-2xl">
+<div class="bg-green-900 text-white text-[11px] md:text-sm py-2 text-center font-medium">
+    🚚 Free Delivery on orders above 2000 PKR in Banda Nabi! | 📞 0340-1915677
+</div>
+
+<nav class="glass-nav shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 h-20 flex justify-between items-center">
+        <div onclick="showSection('home')" class="flex items-center gap-3 cursor-pointer group">
+            <div class="bg-green-700 p-2.5 rounded-2xl text-white shadow-lg group-hover:rotate-6 transition-transform">
+                <i class="fas fa-shopping-basket text-2xl"></i>
+            </div>
             <div>
-                <h1 class="text-2xl font-bold text-green-800">Ihsan Ul Haq & Sons</h1>
-                <p class="text-sm text-gray-500">General Store • Banda Nabi</p>
+                <h1 class="text-xl font-black text-green-900 leading-none">IHSAN UL & SONS STORE</h1>
+                <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold">The Quality Supermarket</p>
             </div>
         </div>
-        <div class="flex items-center gap-8 text-lg font-medium text-gray-700">
-            <a href="#" onclick="showSection('home')" class="hover:text-green-700">Home</a>
-            <a href="#" onclick="showSection('shop')" class="hover:text-green-700">Shop</a>
-            <a href="#" onclick="showSection('admin')" class="hover:text-green-700 font-semibold text-green-700">Admin Panel</a>
-            <a href="#" onclick="showCart()" class="relative flex items-center">
-                <i class="fas fa-shopping-cart text-3xl"></i>
-                <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold h-6 w-6 flex items-center justify-center rounded-full">0</span>
-            </a>
+
+        <div class="hidden lg:flex items-center gap-8 font-semibold text-gray-600">
+            <a href="javascript:void(0)" onclick="showSection('home')" class="hover:text-green-700">Home</a>
+            <a href="javascript:void(0)" onclick="showSection('shop')" class="hover:text-green-700">All Products</a>
+            <button onclick="showSection('admin')" class="text-gray-300 hover:text-green-700 transition"><i class="fas fa-user-shield"></i></button>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <div onclick="showCart()" class="relative bg-green-100 p-3 rounded-2xl cursor-pointer hover:bg-green-200 transition shadow-sm">
+                <i class="fas fa-shopping-cart text-green-800 text-xl"></i>
+                <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold h-6 w-6 flex items-center justify-center rounded-full border-2 border-white">0</span>
+            </div>
         </div>
     </div>
 </nav>
 
-<!-- HOME -->
-<section id="home" class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-6 text-center mb-16">
-        <h1 class="text-5xl font-bold text-green-800 mb-4">Fresh & Quality Products</h1>
-        <p class="text-2xl text-gray-600">Banda Nabi Raksha Adda • Free Delivery on 10000+ PKR</p>
-        <button onclick="showSection('shop')" class="mt-8 bg-green-700 text-white px-12 py-5 rounded-3xl text-2xl font-semibold hover:bg-green-800">Shop Now</button>
-    </div>
-
-    <!-- Trending -->
-    <div class="max-w-7xl mx-auto px-6 mb-16">
-        <h2 onclick="filterByTag('trending')" class="text-3xl font-bold text-green-800 mb-6 flex items-center gap-2 cursor-pointer hover:text-green-700"><span class="text-3xl">🔥</span> Trending Products</h2>
-        <div id="trending-grid" class="grid grid-cols-2 md:grid-cols-4 gap-8"></div>
-    </div>
-
-    <!-- New Arrivals -->
-    <div class="max-w-7xl mx-auto px-6 mb-16 bg-gray-50 py-12">
-        <h2 onclick="filterByTag('new')" class="text-3xl font-bold text-green-800 mb-6 flex items-center gap-2 cursor-pointer hover:text-green-700"><span class="text-3xl">🆕</span> New Arrivals</h2>
-        <div id="new-grid" class="grid grid-cols-2 md:grid-cols-4 gap-8"></div>
-    </div>
-
-    <!-- Special Offers -->
-    <div class="max-w-7xl mx-auto px-6">
-        <h2 onclick="filterByTag('offer')" class="text-3xl font-bold text-green-800 mb-6 flex items-center gap-2 cursor-pointer hover:text-green-700"><span class="text-3xl">💰</span> Special Offers</h2>
-        <div id="offer-grid" class="grid grid-cols-2 md:grid-cols-4 gap-8"></div>
-    </div>
-</section>
-
-<!-- CATEGORIES -->
-<section class="max-w-7xl mx-auto px-6 py-16 border-t">
-    <h2 class="text-4xl font-bold text-center mb-10 text-green-800">Shop by Category</h2>
-    <div class="grid grid-cols-3 md:grid-cols-6 gap-6" id="category-list"></div>
-</section>
-
-<!-- SHOP -->
-<section id="shop" class="max-w-7xl mx-auto px-6 py-12 hidden">
-    <div class="flex flex-col md:flex-row justify-between items-center mb-8">
-        <h2 class="text-4xl font-bold text-green-800">All Products</h2>
-        <div class="relative w-full md:w-96">
-            <input type="text" id="search" placeholder="Search products..." 
-                   class="w-full px-6 py-4 border border-gray-300 rounded-3xl text-lg focus:outline-none focus:border-green-600"
-                   onkeyup="liveSearch()">
-            <div id="search-suggestions" class="hidden absolute bg-white shadow-xl rounded-3xl mt-2 w-full max-h-80 overflow-auto z-50 border"></div>
+<section id="home" class="animate-fadeIn">
+    <div class="bg-green-800 py-16 px-6 text-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between relative z-10">
+            <div class="text-center md:text-left">
+                <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight">Fresh Grocery <br><span class="text-yellow-400">At Your Doorstep</span></h1>
+                <p class="text-lg opacity-80 mb-10 max-w-lg">Banda Nabi's most trusted supermarket. Get wholesale prices on retail items.</p>
+                <button onclick="showSection('shop')" class="bg-white text-green-800 px-10 py-4 rounded-2xl font-bold text-lg shadow-xl hover:scale-105 transition">Start Shopping</button>
+            </div>
+            <div class="hidden md:block w-1/3">
+                <i class="fas fa-box-open text-[200px] opacity-10"></i>
+            </div>
         </div>
     </div>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8" id="product-grid"></div>
+
+    <div class="max-w-7xl mx-auto px-4 py-10 overflow-x-auto category-scroll">
+        <div class="flex gap-4 min-w-max" id="home-cat-row"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 mb-16">
+        <div class="bg-red-50 p-8 rounded-[2.5rem] border border-red-100 relative">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-black text-red-600 flex items-center gap-2"><i class="fas fa-bolt"></i> Flash Sale</h2>
+                <span class="text-sm font-bold bg-red-600 text-white px-4 py-1 rounded-full">Ending Soon</span>
+            </div>
+            <div id="flash-sale-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 pb-20">
+        <h2 class="text-3xl font-black text-gray-900 mb-8 border-l-8 border-green-600 pl-4">Trending Now</h2>
+        <div id="trending-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6"></div>
+    </div>
 </section>
 
-<!-- CART MODAL -->
-<div id="cart-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
-        <div class="p-8">
-            <div class="flex justify-between mb-8">
-                <h3 class="text-3xl font-bold">Your Cart</h3>
-                <button onclick="hideCart()" class="text-4xl text-gray-400 hover:text-red-500">×</button>
+<section id="shop" class="max-w-7xl mx-auto px-4 py-8 hidden">
+    <div class="flex flex-col lg:flex-row gap-8">
+        <aside class="w-full lg:w-64 space-y-4">
+            <div class="bg-white p-6 rounded-3xl border shadow-sm">
+                <h3 class="font-bold mb-6 text-gray-400 uppercase text-xs tracking-widest">Filter By Category</h3>
+                <div id="sidebar-cats" class="space-y-1"></div>
             </div>
-            <div id="cart-items" class="space-y-8 max-h-[55vh] overflow-auto"></div>
-            <div class="border-t pt-8 mt-8 space-y-3">
-                <div class="flex justify-between text-xl"><span>Subtotal</span><span id="subtotal">0 PKR</span></div>
-                <div class="flex justify-between text-xl"><span>Delivery Fee</span><span id="delivery-fee">0 PKR</span></div>
-                <div class="flex justify-between text-3xl font-bold text-green-800"><span>Total</span><span id="total">0 PKR</span></div>
+        </aside>
+
+        <main class="flex-1">
+            <div class="bg-white p-4 rounded-3xl shadow-sm border mb-8 flex items-center gap-4">
+                <i class="fas fa-search text-gray-300 ml-4"></i>
+                <input type="text" id="shop-search" onkeyup="liveSearch()" placeholder="Search for Oil, Ghee, Soap..." class="w-full py-2 bg-transparent outline-none text-lg">
             </div>
-            <button onclick="checkout()" class="w-full bg-green-700 text-white py-6 text-2xl rounded-3xl mt-10 hover:bg-green-800">Proceed to Checkout</button>
+            <h2 id="cat-title" class="text-2xl font-black text-gray-800 mb-6">All Products</h2>
+            <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div>
+        </main>
+    </div>
+</section>
+
+<div id="cart-drawer" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="showCart()"></div>
+    <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col animate-slideInRight">
+        <div class="p-6 border-b flex justify-between items-center bg-green-50">
+            <h3 class="text-xl font-black text-green-900 uppercase">Your Basket</h3>
+            <button onclick="showCart()" class="text-3xl text-gray-400">&times;</button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-6"></div>
+        <div class="p-8 border-t bg-white shadow-inner">
+            <div class="flex justify-between text-2xl font-black text-green-900 mb-6">
+                <span>Total:</span>
+                <span id="cart-total">0 PKR</span>
+            </div>
+            <button onclick="goToCheckout()" class="w-full bg-green-700 text-white py-5 rounded-2xl font-black text-lg shadow-xl hover:bg-green-800 transition">Proceed to Checkout</button>
         </div>
     </div>
 </div>
 
-<!-- CHECKOUT -->
-<section id="checkout" class="max-w-2xl mx-auto px-6 py-16 hidden">
-    <div class="bg-white rounded-3xl shadow p-10">
-        <h2 class="text-4xl font-bold mb-10 text-green-800">Checkout</h2>
-        <div class="space-y-8">
-            <div><label class="block text-sm mb-2 font-medium">Customer Name</label><input id="customer-name" type="text" class="w-full border p-5 rounded-3xl" placeholder="Your Full Name"></div>
-            <div><label class="block text-sm mb-2 font-medium">Phone Number (Required for WhatsApp Receipt)</label><input id="customer-phone" type="tel" class="w-full border p-5 rounded-3xl" placeholder="03XX-XXXXXXX"></div>
-            <div><label class="block text-sm mb-2 font-medium">Delivery Area</label>
-                <select id="area" onchange="calculateDelivery()" class="w-full border p-5 rounded-3xl">
-                    <option value="Banda Nabi">Banda Nabi</option>
-                    <option value="Nowshera">Nowshera</option>
-                    <option value="Pabbi">Pabbi</option>
-                    <option value="Taru Jaba">Taru Jaba</option>
-                </select>
+<section id="checkout" class="max-w-4xl mx-auto px-4 py-12 hidden">
+    <div class="bg-white rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border">
+        <div class="flex-1 p-10">
+            <h2 class="text-3xl font-black text-green-900 mb-8">Shipping Details</h2>
+            <div class="space-y-4">
+                <input id="c-name" type="text" placeholder="Full Name" class="w-full bg-gray-50 border p-4 rounded-2xl outline-none focus:ring-2 focus:ring-green-500">
+                <input id="c-phone" type="tel" placeholder="WhatsApp Number (03xxxxxxxxx)" class="w-full bg-gray-50 border p-4 rounded-2xl outline-none focus:ring-2 focus:ring-green-500">
+                <textarea id="c-address" rows="3" placeholder="Complete Address in Banda Nabi" class="w-full bg-gray-50 border p-4 rounded-2xl outline-none focus:ring-2 focus:ring-green-500"></textarea>
+                
+                <div class="pt-4">
+                    <label class="block font-bold mb-4">Payment Method</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <label class="border-2 p-4 rounded-2xl flex flex-col items-center cursor-pointer hover:border-green-500">
+                            <input type="radio" name="pay" value="COD" checked> <span class="text-xs font-bold mt-2">Cash on Delivery</span>
+                        </label>
+                        <label class="border-2 p-4 rounded-2xl flex flex-col items-center cursor-pointer hover:border-green-500">
+                            <input type="radio" name="pay" value="JazzCash"> <span class="text-xs font-bold mt-2">JazzCash</span>
+                        </label>
+                        <label class="border-2 p-4 rounded-2xl flex flex-col items-center cursor-pointer hover:border-green-500">
+                            <input type="radio" name="pay" value="EasyPaisa"> <span class="text-xs font-bold mt-2">EasyPaisa</span>
+                        </label>
+                    </div>
+                </div>
             </div>
-            <div><label class="block text-sm mb-2 font-medium">Full Address</label><textarea id="address" rows="4" class="w-full border p-5 rounded-3xl"></textarea></div>
         </div>
-        <div class="mt-10">
-            <label class="block text-sm mb-4 font-medium">Payment Method</label>
-            <div class="grid grid-cols-2 gap-4">
-                <button onclick="selectPayment(this, 'easypaisa')" class="payment-btn border-2 p-6 rounded-3xl text-center">EasyPaisa<br><span class="text-sm">03195894880</span></button>
-                <button onclick="selectPayment(this, 'jazzcash')" class="payment-btn border-2 p-6 rounded-3xl text-center">JazzCash<br><span class="text-sm">03401915677</span></button>
-                <button onclick="selectPayment(this, 'bank')" class="payment-btn border-2 p-6 rounded-3xl text-center">Bank Transfer</button>
-                <button onclick="selectPayment(this, 'cod')" id="cod-btn" class="payment-btn border-2 p-6 rounded-3xl text-center">Cash on Delivery</button>
+        <div class="w-full md:w-80 bg-green-50 p-10 flex flex-col">
+            <h3 class="font-black text-xl mb-6">Summary</h3>
+            <div id="checkout-list" class="flex-1 space-y-2 text-sm text-gray-600"></div>
+            <div class="border-t pt-4 mt-6">
+                <div class="flex justify-between font-black text-2xl text-green-900">
+                    <span>Total</span>
+                    <span id="final-price">0</span>
+                </div>
             </div>
+            <button onclick="confirmOrder()" class="w-full bg-green-700 text-white py-5 rounded-2xl mt-8 font-black shadow-lg">Place Order</button>
         </div>
-        <button onclick="placeOrder()" class="w-full bg-green-700 text-white py-7 text-2xl rounded-3xl mt-12">Place Order • <span id="final-total">0 PKR</span></button>
     </div>
 </section>
 
-<!-- ADMIN -->
-<section id="admin" class="max-w-7xl mx-auto px-6 py-12 hidden">
-    <div class="bg-white rounded-3xl shadow p-10">
+<section id="admin" class="max-w-7xl mx-auto px-4 py-12 hidden">
+    <div id="admin-login" class="max-w-md mx-auto bg-white p-10 rounded-[2.5rem] shadow-2xl text-center border">
+        <i class="fas fa-lock text-5xl text-green-700 mb-6"></i>
+        <h2 class="text-2xl font-black mb-6">Staff Access Only</h2>
+        <input id="adm-pass" type="password" placeholder="Password" class="w-full p-4 border rounded-2xl mb-4 text-center">
+        <button onclick="checkAdmin()" class="w-full bg-green-900 text-white py-4 rounded-2xl font-bold">Login Dashboard</button>
+    </div>
+
+    <div id="admin-panel" class="hidden">
         <div class="flex justify-between items-center mb-10">
-            <h2 class="text-4xl font-bold text-green-800">Admin Dashboard</h2>
-            <button onclick="logoutAdmin()" class="bg-red-600 text-white px-8 py-4 rounded-3xl">Logout</button>
+            <h2 class="text-3xl font-black text-gray-800">Admin Console</h2>
+            <button onclick="logoutAdmin()" class="bg-red-50 text-red-600 px-6 py-2 rounded-xl font-bold">Logout</button>
         </div>
-        <div class="flex border-b mb-8">
-            <button onclick="switchAdminTab(0)" class="px-8 py-4 font-semibold border-b-4 border-green-700">Products</button>
-            <button onclick="switchAdminTab(1)" class="px-8 py-4 font-semibold">Orders <span id="orders-count-badge" class="ml-2 bg-red-500 text-white text-xs px-3 py-1 rounded-full"></span></button>
+
+        <div class="flex gap-4 border-b mb-8 overflow-x-auto">
+            <button onclick="switchTab(0)" id="t0" class="admin-tab-active pb-4 px-4 whitespace-nowrap">Manage Products</button>
+            <button onclick="switchTab(1)" id="t1" class="text-gray-400 pb-4 px-4 whitespace-nowrap">Add New Item</button>
+            <button onclick="switchTab(2)" id="t2" class="text-gray-400 pb-4 px-4 whitespace-nowrap">Recent Orders</button>
         </div>
-        <div id="admin-products-tab">
-            <div class="grid md:grid-cols-2 gap-12">
-                <div>
-                    <h3 class="text-2xl font-semibold mb-6">Add New Product</h3>
-                    <input id="p-name" type="text" placeholder="Product Name *" class="w-full mb-4 p-5 border rounded-3xl">
-                    <input id="p-price" type="number" placeholder="Price in PKR *" class="w-full mb-4 p-5 border rounded-3xl">
-                    <input id="p-stock" type="number" value="50" placeholder="Stock Quantity *" class="w-full mb-4 p-5 border rounded-3xl">
-                    <select id="p-category" class="w-full mb-4 p-5 border rounded-3xl">
-                        <option>Grocery</option><option>Fruits & Vegetables</option><option>Cold Drinks</option>
-                        <option>Ice Creams</option><option>Biscuits & Snacks</option><option>Baby Care</option><option>Household</option>
-                    </select>
-                    <textarea id="p-desc" placeholder="Description" class="w-full mb-6 p-5 border rounded-3xl" rows="3"></textarea>
-                    <div class="border-2 border-dashed border-green-300 rounded-3xl p-8 text-center mb-6">
-                        <input type="file" id="p-image-upload" accept="image/*" class="hidden" onchange="previewLocalImage(event)">
-                        <button onclick="document.getElementById('p-image-upload').click()" class="bg-green-100 text-green-700 px-8 py-4 rounded-2xl mb-4">📸 Choose from Computer</button>
-                        <p class="text-gray-500 mb-4">OR</p>
-                        <input id="p-image-url" type="text" placeholder="Paste Image URL" class="w-full p-5 border rounded-3xl">
-                    </div>
-                    <div id="image-preview" class="hidden mt-4"><img id="preview-img" class="w-full max-h-56 object-contain rounded-2xl border"></div>
-                    <button onclick="addProduct()" class="w-full bg-green-700 text-white py-5 rounded-3xl text-xl">Add Product</button>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-semibold mb-6">Bulk Import</h3>
-                    <button onclick="downloadSampleCSV()" class="w-full bg-blue-600 text-white py-5 rounded-3xl mb-6 flex items-center justify-center gap-2"><i class="fas fa-download"></i> Download Sample CSV Template</button>
-                    <input type="file" id="csv-upload" accept=".csv" onchange="importCSV(event)" class="block w-full border p-6 rounded-3xl">
-                </div>
-            </div>
-            <div class="mt-16">
-                <h3 class="text-2xl font-semibold mb-6">All Products</h3>
-                <div id="admin-product-list" class="max-h-96 overflow-auto space-y-4"></div>
+
+        <div id="pan0" class="bg-white p-6 rounded-3xl shadow-sm border">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 text-gray-400 text-xs uppercase">
+                        <tr>
+                            <th class="p-4">Item</th>
+                            <th class="p-4">Price</th>
+                            <th class="p-4">Flash/Trend</th>
+                            <th class="p-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-table" class="divide-y"></tbody>
+                </table>
             </div>
         </div>
-        <div id="admin-orders-tab" class="hidden">
-            <h3 class="text-2xl font-semibold mb-6">All Orders</h3>
-            <div id="orders-list" class="space-y-6"></div>
+
+        <div id="pan1" class="hidden bg-white p-8 rounded-3xl shadow-sm border max-w-2xl mx-auto">
+            <div class="space-y-4">
+                <input id="n-name" type="text" placeholder="Product Name" class="w-full border p-4 rounded-2xl">
+                <input id="n-price" type="number" placeholder="Price" class="w-full border p-4 rounded-2xl">
+                <select id="n-cat" class="w-full border p-4 rounded-2xl">
+                    <option>Grocery</option><option>Fruits & Vegetables</option><option>Cold Drinks</option><option>Household</option>
+                </select>
+                <input id="n-img" type="text" placeholder="Image URL (Link)" class="w-full border p-4 rounded-2xl">
+                <button onclick="saveProduct()" class="w-full bg-green-700 text-white py-4 rounded-2xl font-bold">Add Product to Store</button>
+            </div>
+        </div>
+
+        <div id="pan2" class="hidden bg-white p-6 rounded-3xl shadow-sm border">
+            <div id="orders-list" class="space-y-4"></div>
         </div>
     </div>
 </section>
 
-<!-- EDIT MODAL -->
-<div id="edit-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
-    <div class="bg-white rounded-3xl w-full max-w-3xl mx-4 p-8 max-h-[95vh] overflow-y-auto">
-        <div class="flex justify-between mb-8 sticky top-0 bg-white pb-4 border-b">
-            <h3 class="text-3xl font-bold">Edit Product</h3>
-            <button onclick="closeEditModal()" class="text-4xl text-gray-400 hover:text-red-500">×</button>
-        </div>
-        <div class="grid md:grid-cols-2 gap-10">
-            <div>
-                <input id="edit-name" type="text" class="w-full mb-4 p-5 border rounded-3xl" placeholder="Product Name">
-                <input id="edit-price" type="number" class="w-full mb-4 p-5 border rounded-3xl" placeholder="Price in PKR">
-                <input id="edit-stock" type="number" class="w-full mb-4 p-5 border rounded-3xl" placeholder="Stock Quantity">
-                <select id="edit-category" class="w-full mb-4 p-5 border rounded-3xl">
-                    <option>Grocery</option><option>Fruits & Vegetables</option><option>Cold Drinks</option>
-                    <option>Ice Creams</option><option>Biscuits & Snacks</option><option>Baby Care</option><option>Household</option>
-                </select>
-                <textarea id="edit-desc" class="w-full p-5 border rounded-3xl" rows="4" placeholder="Description"></textarea>
-            </div>
-            <div>
-                <div class="border-2 border-dashed border-green-300 rounded-3xl p-8 text-center mb-8">
-                    <input type="file" id="edit-image-upload" accept="image/*" class="hidden" onchange="previewEditImage(event)">
-                    <button onclick="document.getElementById('edit-image-upload').click()" class="bg-green-100 hover:bg-green-200 text-green-700 px-8 py-4 rounded-2xl mb-4 w-full">📸 Change Image</button>
-                    <input id="edit-image-url" type="text" placeholder="Or paste new image URL" class="w-full p-5 border rounded-3xl">
-                </div>
-                <div id="edit-preview" class="hidden mb-8">
-                    <p class="text-sm text-gray-500 mb-2">Preview:</p>
-                    <img id="edit-preview-img" class="w-full max-h-64 object-contain rounded-2xl border">
-                </div>
-                <div class="bg-gray-50 p-6 rounded-3xl">
-                    <p class="font-semibold mb-4 text-lg">Tags</p>
-                    <div class="grid grid-cols-1 gap-4 text-base">
-                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" id="tag-trending" class="w-5 h-5 accent-green-700"> 🔥 Trending</label>
-                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" id="tag-new" class="w-5 h-5 accent-green-700"> 🆕 New Arrival</label>
-                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" id="tag-offer" class="w-5 h-5 accent-green-700" onchange="toggleDiscountField()"> 💰 Special Offer</label>
-                    </div>
-                    <div id="offer-row" class="mt-6 hidden">
-                        <label class="block text-sm mb-2 font-medium">Discount Percentage (%)</label>
-                        <input id="edit-discount" type="number" value="0" min="0" max="99" class="w-full p-5 border rounded-3xl text-center text-2xl font-semibold">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <button onclick="saveEditedProduct()" class="w-full bg-green-700 hover:bg-green-800 text-white py-6 rounded-3xl text-xl font-semibold mt-10">Save Changes</button>
-    </div>
-</div>
-
-<!-- FOOTER -->
-<footer class="bg-green-900 text-white py-16">
+<footer class="bg-gray-900 text-gray-500 py-20 mt-20">
     <div class="max-w-7xl mx-auto px-6 text-center">
-        <h3 class="text-2xl font-bold mb-4">Ihsan Ul Haq and Sons General Store</h3>
-        <p>Banda Nabi Raksha Adda near Govt High School (Boys)</p>
-        <p class="mt-6">📞 Ata Ullah: <a href="https://wa.me/923401915677" class="underline">+92 340 1915677</a></p>
+        <h3 class="text-white text-2xl font-bold mb-4">Ihsan Ul Haq & Sons Store</h3>
+        <p class="max-w-md mx-auto mb-10 text-sm">Nowshera, Banda Nabi Raksha Adda near Govt High School.</p>
+        <div class="flex justify-center gap-6">
+            <a href="https://wa.me/923401915677" class="text-green-500 text-4xl"><i class="fab fa-whatsapp"></i></a>
+            <a href="tel:03401915677" class="text-blue-500 text-4xl"><i class="fas fa-phone-alt"></i></a>
+        </div>
     </div>
 </footer>
 
 <script>
-// ================== DATA ==================
-let products = JSON.parse(localStorage.getItem('products')) || [
-    {id:1, name:"Dalda Cooking Oil 5L", price:1250, category:"Grocery", desc:"Pure cooking oil", img:"https://picsum.photos/id/201/300/300", stock:45, tags:["trending"], discount:0},
-    {id:2, name:"Fresh Bananas 1kg", price:180, category:"Fruits & Vegetables", desc:"Sweet ripe bananas", img:"https://picsum.photos/id/292/300/300", stock:120, tags:["new"], discount:0},
-    {id:3, name:"Coca Cola 1.5L", price:120, category:"Cold Drinks", desc:"Chilled drink", img:"https://picsum.photos/id/30/300/300", stock:30, tags:["offer"], discount:15}
+// ================== MASTER DATA ==================
+let products = JSON.parse(localStorage.getItem('ihsan_super_db')) || [
+    {id: 1, name: "Dalda Ghee 5L", price: 2350, category: "Grocery", img: "https://picsum.photos/id/201/400/400", flash: true, trending: true},
+    {id: 2, name: "Sella Rice 5kg", price: 1680, category: "Grocery", img: "https://picsum.photos/id/202/400/400", flash: false, trending: true},
+    {id: 3, name: "Pepsi 1.5L Case", price: 960, category: "Cold Drinks", img: "https://picsum.photos/id/203/400/400", flash: true, trending: false},
+    {id: 4, name: "Lays Family Pack", price: 120, category: "Biscuits & Snacks", img: "https://picsum.photos/id/204/400/400", flash: false, trending: true}
 ];
 
-let orders = JSON.parse(localStorage.getItem('orders')) || [];
+let orders = JSON.parse(localStorage.getItem('ihsan_orders_db')) || [];
 let cart = [];
-let tempImageUrl = "";
-let editIndex = -1;
-let adminLoggedIn = false;
-let currentTab = 0;
+const categories = ["All", "Grocery", "Fruits & Vegetables", "Cold Drinks", "Ice Creams", "Biscuits & Snacks", "Household", "Baby Care"];
 
-// ================== RENDER ==================
-function renderCategories() {
-    const cats = ["All","Grocery","Fruits & Vegetables","Cold Drinks","Ice Creams","Biscuits & Snacks","Baby Care","Household"];
-    let html = '';
-    cats.forEach(cat => html += `<div onclick="filterByCategory('${cat}')" class="bg-white p-8 text-center rounded-3xl shadow hover:shadow-xl cursor-pointer text-lg font-medium">${cat}</div>`);
-    document.getElementById('category-list').innerHTML = html;
+// ================== APP ENGINE ==================
+window.onload = () => {
+    initHome();
+    initSidebar();
+    renderProducts(products);
+    updateCartCount();
+};
+
+function initHome() {
+    const catRow = document.getElementById('home-cat-row');
+    catRow.innerHTML = categories.slice(1).map(c => `
+        <div onclick="filterByCategory('${c}')" class="bg-white px-8 py-6 rounded-3xl shadow-sm border hover:border-green-500 cursor-pointer transition flex flex-col items-center gap-2">
+            <div class="bg-green-50 h-12 w-12 rounded-full flex items-center justify-center text-green-700"><i class="fas fa-shopping-basket"></i></div>
+            <span class="font-bold text-gray-700">${c}</span>
+        </div>
+    `).join('');
+
+    const flash = products.filter(p => p.flash);
+    document.getElementById('flash-sale-grid').innerHTML = flash.map(p => createCard(p, true)).join('');
+
+    const trending = products.filter(p => p.trending);
+    document.getElementById('trending-grid').innerHTML = trending.map(p => createCard(p)).join('');
 }
 
-function renderProducts(filtered) {
-    let html = '';
-    filtered.forEach(p => {
-        const outOfStock = p.stock <= 0;
-        const discPrice = p.discount > 0 ? Math.round(p.price * (1 - p.discount/100)) : p.price;
-        html += `
-        <div class="product-card bg-white rounded-3xl overflow-hidden shadow">
-            <img src="${p.img}" class="w-full h-52 object-cover">
-            <div class="p-6">
-                <div class="flex justify-between">
-                    <h4 class="font-semibold text-lg">${p.name}</h4>
-                    ${p.discount > 0 ? `<span class="bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full">-${p.discount}% OFF</span>` : ''}
-                </div>
-                <p class="text-sm text-gray-500">${p.desc}</p>
-                <div class="flex justify-between items-end mt-6">
-                    ${p.discount > 0 ? `<span class="line-through text-gray-400">${p.price} PKR</span>` : ''}
-                    <span class="text-2xl font-bold text-green-700">${discPrice} PKR</span>
-                    ${outOfStock ? `<span class="bg-red-100 text-red-600 px-3 py-1 rounded-full text-xs">Out of Stock</span>` : `<span class="text-xs text-green-600">${p.stock} left</span>`}
-                </div>
-                ${outOfStock ? `<button onclick="outOfStockAlert()" class="mt-6 w-full bg-red-100 text-red-600 py-3 rounded-2xl text-sm">Out of Stock - Come back later</button>` : `<button onclick="addToCart(${p.id}); event.stopImmediatePropagation()" class="mt-6 w-full bg-green-700 text-white py-3 rounded-2xl text-sm hover:bg-green-800">Add to Cart</button>`}
+function initSidebar() {
+    document.getElementById('sidebar-cats').innerHTML = categories.map(c => `
+        <button onclick="filterByCategory('${c}')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-green-700 hover:text-white font-semibold transition">
+            ${c}
+        </button>
+    `).join('');
+}
+
+function showSection(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    window.scrollTo(0,0);
+}
+
+function createCard(p, isFlash = false) {
+    return `
+        <div class="product-card bg-white rounded-[2rem] overflow-hidden border flex flex-col shadow-sm">
+            <div class="relative">
+                <img src="${p.img}" class="w-full h-44 object-cover">
+                <button onclick="addToCart(${p.id})" class="absolute bottom-3 right-3 bg-green-700 text-white h-10 w-10 rounded-xl shadow-lg hover:bg-green-800 transition">
+                    <i class="fas fa-plus"></i>
+                </button>
+                ${isFlash ? '<span class="absolute top-3 left-3 bg-red-600 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase">Sale</span>' : ''}
             </div>
-        </div>`;
-    });
-    document.getElementById('product-grid').innerHTML = html || `<p class="col-span-full text-center py-20 text-gray-400">No products found</p>`;
+            <div class="p-4 flex flex-col flex-1">
+                <h4 class="font-bold text-gray-800 text-sm truncate">${p.name}</h4>
+                <p class="text-xs text-gray-400 mb-4">${p.category}</p>
+                <div class="mt-auto">
+                    <p class="text-lg font-black text-green-700">${p.price} <span class="text-[10px]">PKR</span></p>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
-function renderHomeSections() {
-    const trending = products.filter(p => p.tags.includes('trending'));
-    document.getElementById('trending-grid').innerHTML = trending.length ? trending.map(p => `<div onclick="quickView(${p.id});" class="product-card bg-white rounded-3xl overflow-hidden shadow cursor-pointer">${getSmallCard(p)}</div>`).join('') : '<p class="col-span-full text-center py-12 text-gray-400">No trending products</p>';
-
-    const newArr = products.filter(p => p.tags.includes('new'));
-    document.getElementById('new-grid').innerHTML = newArr.length ? newArr.map(p => `<div onclick="quickView(${p.id});" class="product-card bg-white rounded-3xl overflow-hidden shadow cursor-pointer">${getSmallCard(p)}</div>`).join('') : '<p class="col-span-full text-center py-12 text-gray-400">No new arrivals</p>';
-
-    const offers = products.filter(p => p.tags.includes('offer') && p.discount > 0);
-    document.getElementById('offer-grid').innerHTML = offers.length ? offers.map(p => `<div onclick="quickView(${p.id});" class="product-card bg-white rounded-3xl overflow-hidden shadow cursor-pointer">${getSmallCard(p)}</div>`).join('') : '<p class="col-span-full text-center py-12 text-gray-400">No special offers</p>';
+function renderProducts(list) {
+    document.getElementById('product-grid').innerHTML = list.map(p => createCard(p)).join('');
 }
 
-function getSmallCard(p) {
-    const discPrice = p.discount > 0 ? Math.round(p.price * (1 - p.discount/100)) : p.price;
-    return `<img src="${p.img}" class="w-full h-40 object-cover"><div class="p-4"><h4 class="font-semibold">${p.name}</h4><div class="flex justify-between mt-4"><span class="text-xl font-bold text-green-700">${discPrice} PKR</span><span class="text-xs text-green-600">${p.stock} left</span></div></div>`;
+function filterByCategory(c) {
+    showSection('shop');
+    document.getElementById('cat-title').innerText = c;
+    const filtered = (c === "All") ? products : products.filter(p => p.category === c);
+    renderProducts(filtered);
 }
 
-function outOfStockAlert() {
-    alert("❌ Item is currently out of stock.\n\nPlease come back later, we are updating the inventory on daily basis.");
-}
-
-// ================== SEARCH ==================
 function liveSearch() {
-    const term = document.getElementById('search').value.toLowerCase().trim();
-    const box = document.getElementById('search-suggestions');
-    if (term === '') { box.classList.add('hidden'); return; }
+    const term = document.getElementById('shop-search').value.toLowerCase();
     const filtered = products.filter(p => p.name.toLowerCase().includes(term));
-    let html = '';
-    filtered.forEach(p => {
-        html += `<div onclick="selectSuggestion(${p.id});" class="px-6 py-4 hover:bg-gray-100 cursor-pointer flex gap-4"><img src="${p.img}" class="w-12 h-12 object-cover rounded-xl"><div><p class="font-medium">${p.name}</p><p class="text-sm text-green-700">${p.price} PKR</p></div></div>`;
-    });
-    box.innerHTML = html || `<p class="px-6 py-4 text-gray-400">No matching products</p>`;
-    box.classList.remove('hidden');
-}
-
-function selectSuggestion(id) {
-    document.getElementById('search').value = '';
-    document.getElementById('search-suggestions').classList.add('hidden');
-    showSection('shop');
-    renderProducts([products.find(p => p.id === id)]);
-}
-
-// ================== FILTERS ==================
-function filterByCategory(cat) {
-    const filtered = cat === "All" ? products : products.filter(p => p.category === cat);
-    showSection('shop');
     renderProducts(filtered);
 }
 
-function filterByTag(tag) {
-    const filtered = products.filter(p => p.tags.includes(tag));
-    showSection('shop');
-    renderProducts(filtered);
-}
-
-// ================== ADD TO CART ==================
-function addToCart(id) {
-    const prod = products.find(p => p.id === id);
-    if (prod.stock <= 0) return outOfStockAlert();
-    const exist = cart.find(item => item.id === id);
-    const currentQty = exist ? exist.qty : 0;
-    if (currentQty + 1 > prod.stock) return alert(`❌ Only ${prod.stock} items left in stock!`);
-    if (exist) exist.qty++;
-    else cart.push({...prod, qty: 1});
-    updateCartCount();
-    alert(`${prod.name} added to cart 🛒`);
-}
-
-function changeQty(i, change) {
-    const item = cart[i];
-    const prod = products.find(p => p.id === item.id);
-    const newQty = item.qty + change;
-    if (newQty > prod.stock) return alert(`❌ Only ${prod.stock} items left in stock!`);
-    if (newQty < 1) cart.splice(i, 1);
-    else item.qty = newQty;
-    showCart();
-}
-
-// ================== CART MODAL ==================
+// ================== CART ENGINE ==================
 function showCart() {
-    let html = '', subtotal = 0;
-    cart.forEach((item, i) => {
-        const tot = item.price * item.qty;
-        subtotal += tot;
-        html += `
-        <div class="flex gap-6">
-            <img src="${item.img}" class="w-20 h-20 object-cover rounded-2xl">
-            <div class="flex-1">
-                <p class="font-medium">${item.name}</p>
-                <p class="text-green-600">${item.price} × ${item.qty} = ${tot} PKR</p>
-                <div class="flex gap-4 mt-3">
-                    <button onclick="changeQty(${i}, -1)" class="border px-4 py-1 rounded-xl">-</button>
-                    <span>${item.qty}</span>
-                    <button onclick="changeQty(${i}, 1)" class="border px-4 py-1 rounded-xl">+</button>
-                </div>
-            </div>
-            <button onclick="removeFromCart(${i})" class="text-red-500 text-2xl">×</button>
-        </div>`;
-    });
-    document.getElementById('cart-items').innerHTML = html || '<p class="py-16 text-center text-gray-400">Cart is empty</p>';
-    document.getElementById('subtotal').textContent = `${subtotal} PKR`;
-    document.getElementById('total').textContent = `${subtotal} PKR`;
-    document.getElementById('cart-modal').classList.remove('hidden');
+    const drawer = document.getElementById('cart-drawer');
+    drawer.classList.toggle('hidden');
+    renderCart();
 }
 
-function removeFromCart(i) { cart.splice(i, 1); showCart(); }
-function hideCart() { document.getElementById('cart-modal').classList.add('hidden'); }
-
-// ================== CHECKOUT & WHATSAPP ==================
-function checkout() {
-    if (cart.length === 0) return alert("Cart is empty!");
-    hideCart();
-    showSection('checkout');
-    calculateDelivery();
-}
-
-function calculateDelivery() {
-    const area = document.getElementById('area').value;
-    const subtotal = cart.reduce((a,b) => a + b.price * b.qty, 0);
-    const fee = (area === "Banda Nabi" && subtotal >= 500) ? 0 : (area === "Banda Nabi" ? 100 : 150);
-    document.getElementById('delivery-fee').textContent = `${fee} PKR`;
-    document.getElementById('final-total').textContent = `${subtotal + fee} PKR`;
-}
-
-function placeOrder() {
-    if (cart.length === 0) return;
-    const customerName = document.getElementById('customer-name').value.trim() || "Customer";
-    const phone = document.getElementById('customer-phone').value.trim();
-    if (!phone || phone.length < 10) return alert("Please enter your valid phone number for WhatsApp receipt!");
-    const area = document.getElementById('area').value;
-    const address = document.getElementById('address').value.trim();
-    const subtotal = cart.reduce((a,b)=>a + b.price*b.qty, 0);
-    const delivery = (area === "Banda Nabi" && subtotal >= 500) ? 0 : (area === "Banda Nabi" ? 100 : 150);
-    const total = subtotal + delivery;
-    const orderId = Date.now();
-
-    cart.forEach(item => {
-        const prod = products.find(p => p.id === item.id);
-        if (prod) prod.stock -= item.qty;
-    });
-
-    const newOrder = {id: orderId, date: new Date().toLocaleString('en-PK'), customerName, phone, area, address: address || "No address", items: [...cart], total, status: "Pending"};
-    orders.unshift(newOrder);
-    localStorage.setItem('products', JSON.stringify(products));
-    localStorage.setItem('orders', JSON.stringify(orders));
-
-    const itemsText = cart.map(item => `${item.name} ×${item.qty} = ${item.price*item.qty} PKR`).join('%0A');
-    const message = `🎉 *Order Placed Successfully*%0AOrder ID: #${orderId}%0ADate: ${newOrder.date}%0ATotal: ${total} PKR%0A%0AItems:%0A${itemsText}%0A%0ADelivery: ${area}%0AThank you!`;
-    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
-
-    alert(`🎉 Order #${orderId} Placed!\nReceipt sent on WhatsApp to ${phone}`);
-    cart = [];
+function addToCart(id) {
+    const p = products.find(x => x.id === id);
+    const existing = cart.find(x => x.id === id);
+    if(existing) existing.qty++;
+    else cart.push({...p, qty: 1});
     updateCartCount();
-    updateNotificationBadge();
-    renderHomeSections();
-    showSection('home');
-}
-
-function selectPayment(btn, method) {
-    document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('border-green-700'));
-    btn.classList.add('border-green-700');
-    if (method === 'easypaisa') window.open(`https://wa.me/923195894880?text=Order%20payment%20for%20Ihsan%20Store`, '_blank');
-    if (method === 'jazzcash') window.open(`https://wa.me/923401915677?text=Order%20payment%20for%20Ihsan%20Store`, '_blank');
-    if (method === 'bank') alert("Sorry, the option is currently not available.");
-}
-
-// ================== ADMIN & EDIT ==================
-function addProduct() {
-    const name = document.getElementById('p-name').value.trim();
-    const price = parseInt(document.getElementById('p-price').value);
-    const stock = parseInt(document.getElementById('p-stock').value) || 0;
-    const category = document.getElementById('p-category').value;
-    const desc = document.getElementById('p-desc').value.trim();
-    let img = tempImageUrl || document.getElementById('p-image-url').value.trim() || "https://picsum.photos/id/201/300/300";
-    if (!name || !price) return alert("Name aur Price daalna zaroori hai!");
-    products.push({id: Date.now(), name, price, stock, category, desc: desc || "Fresh product", img, tags: [], discount: 0});
-    localStorage.setItem('products', JSON.stringify(products));
-    alert("✅ Product Added Successfully!");
-    clearForm();
-    renderAdminProducts();
-    renderProducts(products);
-    renderHomeSections();
-}
-
-function clearForm() {
-    document.getElementById('p-name').value = '';
-    document.getElementById('p-price').value = '';
-    document.getElementById('p-stock').value = '50';
-    document.getElementById('p-desc').value = '';
-    document.getElementById('p-image-url').value = '';
-    document.getElementById('image-preview').classList.add('hidden');
-    tempImageUrl = "";
-}
-
-function previewLocalImage(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-        tempImageUrl = ev.target.result;
-        document.getElementById('preview-img').src = tempImageUrl;
-        document.getElementById('image-preview').classList.remove('hidden');
-    };
-    reader.readAsDataURL(file);
-}
-
-function renderAdminProducts() {
-    let html = '';
-    products.forEach((p, i) => {
-        html += `<div class="flex gap-6 bg-gray-50 p-6 rounded-3xl"><img src="${p.img}" class="w-24 h-24 object-cover rounded-2xl"><div class="flex-1"><p class="font-semibold">${p.name}</p><p class="text-green-700">${p.price} PKR • Stock: ${p.stock}</p><p class="text-sm text-gray-500">${p.category}</p></div><button onclick="editProduct(${i}); event.stopImmediatePropagation()" class="bg-green-700 text-white px-5 py-2 rounded-2xl text-sm">Edit</button><button onclick="deleteProduct(${i}); event.stopImmediatePropagation()" class="text-red-600 text-3xl ml-4">🗑</button></div>`;
-    });
-    document.getElementById('admin-product-list').innerHTML = html || '<p class="text-gray-400 py-12 text-center">No products yet</p>';
-}
-
-function editProduct(index) {
-    editIndex = index;
-    const p = products[index];
-    document.getElementById('edit-name').value = p.name;
-    document.getElementById('edit-price').value = p.price;
-    document.getElementById('edit-stock').value = p.stock;
-    document.getElementById('edit-category').value = p.category;
-    document.getElementById('edit-desc').value = p.desc || '';
-    document.getElementById('edit-modal').classList.remove('hidden');
-}
-
-function saveEditedProduct() {
-    if (editIndex === -1) return;
-    const p = products[editIndex];
-    p.name = document.getElementById('edit-name').value.trim();
-    p.price = parseInt(document.getElementById('edit-price').value);
-    p.stock = parseInt(document.getElementById('edit-stock').value);
-    p.category = document.getElementById('edit-category').value;
-    p.desc = document.getElementById('edit-desc').value.trim();
-    localStorage.setItem('products', JSON.stringify(products));
-    closeEditModal();
-    renderAdminProducts();
-    renderProducts(products);
-    renderHomeSections();
-    alert("✅ Product updated!");
-}
-
-function closeEditModal() {
-    editIndex = -1;
-    document.getElementById('edit-modal').classList.add('hidden');
-}
-
-function deleteProduct(i) {
-    if (confirm("Delete this product?")) {
-        products.splice(i, 1);
-        localStorage.setItem('products', JSON.stringify(products));
-        renderAdminProducts();
-        renderProducts(products);
-        renderHomeSections();
-    }
-}
-
-function downloadSampleCSV() {
-    const csv = `Name,Price,Category,Desc,Image,Stock
-Dalda Cooking Oil 5L,1250,Grocery,Pure cooking oil,https://picsum.photos/id/201/300/300,50
-Fresh Bananas 1kg,180,Fruits & Vegetables,Sweet bananas,https://picsum.photos/id/292/300/300,100`;
-    const blob = new Blob([csv], {type: 'text/csv'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Ihsan_Store_Sample.csv';
-    a.click();
-    alert("✅ Sample CSV downloaded!");
-}
-
-function importCSV(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-        const lines = ev.target.result.trim().split('\n');
-        let added = 0;
-        for (let i = 1; i < lines.length; i++) {
-            const cols = lines[i].split(',').map(c => c.trim());
-            if (cols.length >= 5) {
-                products.push({
-                    id: Date.now() + added,
-                    name: cols[0],
-                    price: parseInt(cols[1]),
-                    category: cols[2] || "Grocery",
-                    desc: cols[3] || "",
-                    img: cols[4] || "https://picsum.photos/id/201/300/300",
-                    stock: parseInt(cols[5]) || 50,
-                    tags: [],
-                    discount: 0
-                });
-                added++;
-            }
-        }
-        localStorage.setItem('products', JSON.stringify(products));
-        alert(`✅ ${added} products added!`);
-        renderAdminProducts();
-        renderProducts(products);
-        renderHomeSections();
-        e.target.value = '';
-    };
-    reader.readAsText(file);
 }
 
 function updateCartCount() {
-    document.getElementById('cart-count').textContent = cart.reduce((a,b)=>a+b.qty,0);
+    document.getElementById('cart-count-badge').innerText = cart.reduce((a, b) => a + b.qty, 0);
 }
 
-function updateNotificationBadge() {
-    const pending = orders.filter(o => o.status === "Pending").length;
-    const badge = document.getElementById('orders-count-badge');
-    badge.textContent = pending;
-    badge.style.display = pending > 0 ? 'inline' : 'none';
+function renderCart() {
+    const container = document.getElementById('cart-items');
+    let total = 0;
+    container.innerHTML = cart.map((item, i) => {
+        total += (item.price * item.qty);
+        return `
+            <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl">
+                <img src="${item.img}" class="w-16 h-16 rounded-xl object-cover">
+                <div class="flex-1">
+                    <h5 class="font-bold text-sm text-gray-800">${item.name}</h5>
+                    <p class="text-green-700 font-bold">${item.price} PKR</p>
+                    <div class="flex items-center gap-3 mt-2">
+                        <button onclick="updateQty(${i}, -1)" class="w-7 h-7 border rounded-full bg-white">-</button>
+                        <span class="font-bold text-sm">${item.qty}</span>
+                        <button onclick="updateQty(${i}, 1)" class="w-7 h-7 border rounded-full bg-white">+</button>
+                    </div>
+                </div>
+                <button onclick="removeCart(${i})" class="text-red-300 hover:text-red-500"><i class="fas fa-trash"></i></button>
+            </div>
+        `;
+    }).join('');
+    document.getElementById('cart-total').innerText = `${total} PKR`;
 }
 
-function renderOrders() {
-    const container = document.getElementById('orders-list');
-    if (orders.length === 0) return container.innerHTML = `<p class="text-center py-20 text-gray-400">No orders yet</p>`;
-    let html = '';
-    orders.forEach((order, i) => {
-        html += `<div class="border rounded-3xl p-8"><div class="flex justify-between"><span>#${order.id}</span><select onchange="updateOrderStatus(${i}, this.value)"><option value="Pending" ${order.status==='Pending'?'selected':''}>Pending</option><option value="Confirmed" ${order.status==='Confirmed'?'selected':''}>Confirmed</option><option value="Delivered" ${order.status==='Delivered'?'selected':''}>Delivered</option></select></div><p><strong>Customer:</strong> ${order.customerName} • ${order.phone}</p><p><strong>Area:</strong> ${order.area} • Total: ${order.total} PKR</p></div>`;
+function updateQty(i, d) {
+    cart[i].qty += d;
+    if(cart[i].qty <= 0) cart.splice(i, 1);
+    renderCart();
+    updateCartCount();
+}
+
+function removeCart(i) {
+    cart.splice(i, 1);
+    renderCart();
+    updateCartCount();
+}
+
+function goToCheckout() {
+    if(cart.length === 0) return alert("Cart is empty");
+    showCart();
+    showSection('checkout');
+    const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+    document.getElementById('checkout-list').innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.name} x${i.qty}</span><span>${i.price * i.qty}</span></div>`).join('');
+    document.getElementById('final-price').innerText = `${total} PKR`;
+}
+
+function confirmOrder() {
+    const name = document.getElementById('c-name').value;
+    const phone = document.getElementById('c-phone').value;
+    const addr = document.getElementById('c-address').value;
+    const pay = document.querySelector('input[name="pay"]:checked').value;
+
+    if(!name || !phone || !addr) return alert("Missing Details");
+
+    const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+    const orderId = Date.now();
+    const newOrder = { orderId, name, phone, addr, pay, items: [...cart], total, status: 'Placed' };
+    
+    orders.unshift(newOrder);
+    localStorage.setItem('ihsan_orders_db', JSON.stringify(orders));
+
+    // WhatsApp Message
+    const itemsText = cart.map(i => `• ${i.name} (${i.qty}x)`).join('%0A');
+    const msg = `*NEW ORDER - IHSAN STORE*%0A*ID:* ${orderId}%0A*Name:* ${name}%0A*Address:* ${addr}%0A*Items:*%0A${itemsText}%0A*TOTAL:* ${total} PKR`;
+    window.open(`https://wa.me/923401915677?text=${msg}`);
+
+    cart = [];
+    updateCartCount();
+    showSection('home');
+    alert("Order Successful!");
+}
+
+// ================== ADMIN DASHBOARD ==================
+function checkAdmin() {
+    if(document.getElementById('adm-pass').value === "ihsan123") {
+        document.getElementById('admin-login').classList.add('hidden');
+        document.getElementById('admin-panel').classList.remove('hidden');
+        renderInventory();
+        renderOrders();
+    } else alert("Wrong Password");
+}
+
+function switchTab(n) {
+    document.querySelectorAll('.admin-tab-active').forEach(t => {
+        t.classList.remove('admin-tab-active');
+        t.classList.add('text-gray-400');
     });
-    container.innerHTML = html;
+    document.getElementById(`t${n}`).classList.add('admin-tab-active');
+    document.getElementById(`t${n}`).classList.remove('text-gray-400');
+    
+    [0,1,2].forEach(i => document.getElementById(`pan${i}`).classList.add('hidden'));
+    document.getElementById(`pan${n}`).classList.remove('hidden');
 }
 
-function updateOrderStatus(i, status) {
-    const order = orders[i];
-    order.status = status;
-    localStorage.setItem('orders', JSON.stringify(orders));
-    const phone = order.phone;
-    let msg = '';
-    if (status === "Confirmed") msg = `✅ Order #${order.id} Confirmed! We are preparing your order.`;
-    if (status === "Delivered") msg = `🚚 Order #${order.id} Delivered! Thank you for shopping with us.`;
-    if (msg && phone) window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-    renderOrders();
+function renderInventory() {
+    document.getElementById('inventory-table').innerHTML = products.map((p, i) => `
+        <tr>
+            <td class="p-4 flex items-center gap-3">
+                <img src="${p.img}" class="w-10 h-10 rounded-lg">
+                <input type="text" value="${p.name}" onchange="editProduct(${i}, 'name', this.value)" class="bg-transparent font-bold">
+            </td>
+            <td class="p-4"><input type="number" value="${p.price}" onchange="editProduct(${i}, 'price', this.value)" class="w-20 bg-transparent"></td>
+            <td class="p-4">
+                <label class="mr-2">Sale: <input type="checkbox" ${p.flash ? 'checked' : ''} onchange="editProduct(${i}, 'flash', this.checked)"></label>
+                <label>Trend: <input type="checkbox" ${p.trending ? 'checked' : ''} onchange="editProduct(${i}, 'trending', this.checked)"></label>
+            </td>
+            <td class="p-4"><button onclick="deleteP(${i})" class="text-red-500"><i class="fas fa-trash"></i></button></td>
+        </tr>
+    `).join('');
 }
 
-function switchAdminTab(tab) {
-    currentTab = tab;
-    document.getElementById('admin-products-tab').classList.toggle('hidden', tab !== 0);
-    document.getElementById('admin-orders-tab').classList.toggle('hidden', tab !== 1);
-    if (tab === 1) renderOrders();
+function editProduct(i, key, val) {
+    products[i][key] = (key === 'price') ? parseInt(val) : val;
+    localStorage.setItem('ihsan_super_db', JSON.stringify(products));
+    initHome();
 }
 
-function showSection(section) {
-    document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-    if (section === 'admin') {
-        if (!adminLoggedIn) {
-            const pass = prompt("Enter Admin Password:");
-            if (pass === "ihsan123") {
-                adminLoggedIn = true;
-                document.getElementById('admin').classList.remove('hidden');
-                updateNotificationBadge();
-                switchAdminTab(0);
-                renderAdminProducts();
-            } else alert("Wrong Password!");
-        } else {
-            document.getElementById('admin').classList.remove('hidden');
-            updateNotificationBadge();
-            switchAdminTab(currentTab);
-            if (currentTab === 0) renderAdminProducts();
-        }
-    } else if (section === 'shop') {
-        document.getElementById('shop').classList.remove('hidden');
-        renderProducts(products);
-    } else {
-        document.getElementById(section).classList.remove('hidden');
-        if (section === 'home') renderHomeSections();
+function deleteP(i) {
+    if(confirm("Delete Product?")) {
+        products.splice(i, 1);
+        localStorage.setItem('ihsan_super_db', JSON.stringify(products));
+        renderInventory();
     }
 }
 
+function saveProduct() {
+    const name = document.getElementById('n-name').value;
+    const price = parseInt(document.getElementById('n-price').value);
+    const cat = document.getElementById('n-cat').value;
+    const img = document.getElementById('n-img').value || "https://picsum.photos/400/400";
+    if(!name || !price) return;
+    products.push({ id: Date.now(), name, price, category: cat, img, flash: false, trending: false });
+    localStorage.setItem('ihsan_super_db', JSON.stringify(products));
+    renderInventory();
+    switchTab(0);
+}
+
+function renderOrders() {
+    document.getElementById('orders-list').innerHTML = orders.map((o, i) => `
+        <div class="p-6 bg-gray-50 rounded-2xl border flex flex-col md:flex-row justify-between gap-4">
+            <div>
+                <p class="font-black">#${o.orderId} - ${o.name}</p>
+                <p class="text-xs text-gray-400">${o.addr}</p>
+                <p class="text-sm font-bold text-green-700">${o.total} PKR - Status: ${o.status}</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="sendStatusUpdate(${i}, 'Dispatched')" class="bg-blue-100 text-blue-600 px-3 py-2 rounded-xl text-xs font-bold">Dispatch</button>
+                <button onclick="sendStatusUpdate(${i}, 'Delivered')" class="bg-green-100 text-green-600 px-3 py-2 rounded-xl text-xs font-bold">Deliver</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function sendStatusUpdate(i, status) {
+    orders[i].status = status;
+    localStorage.setItem('ihsan_orders_db', JSON.stringify(orders));
+    renderOrders();
+    const o = orders[i];
+    const msg = `*IHSAN STORE UPDATE*%0AHello *${o.name}*,%0AYour order #${o.orderId} status has been updated to: *${status}*.%0AThank you!`;
+    window.open(`https://wa.me/${o.phone}?text=${msg}`);
+}
+
 function logoutAdmin() {
-    adminLoggedIn = false;
+    document.getElementById('admin-login').classList.remove('hidden');
+    document.getElementById('admin-panel').classList.add('hidden');
     showSection('home');
 }
-
-function quickView(id) {
-    showSection('shop');
-    renderProducts([products.find(p => p.id === id)]);
-}
-
-// ================== INIT ==================
-window.onload = () => {
-    renderCategories();
-    renderProducts(products);
-    renderHomeSections();
-    updateCartCount();
-    console.log("%c✅ Full Website Loaded Successfully! Trending/New/Offer buttons fixed + Home refresh fixed.", "color:green; font-size:16px");
-};
 </script>
 </body>
 </html>
