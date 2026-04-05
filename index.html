@@ -3,504 +3,1239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ihsan Ul Haq & Sons | Professional Supermarket</title>
+    <title>Ihsan Ul Haq & Sons General Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
-        .product-card:hover { transform: translateY(-10px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
-        .animate-slideInRight { animation: slideInRight 0.3s ease-out; }
-        .admin-tab-active { border-bottom: 4px solid #15803d; color: #15803d; font-weight: bold; }
-        .category-scroll::-webkit-scrollbar { display: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+       
+        .product-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.15);
+        }
+       
+        .hero-bg {
+            background: linear-gradient(90deg, rgba(22, 101, 52, 0.92), rgba(22, 101, 52, 0.85)),
+                        url('https://picsum.photos/id/1015/2000/1200') center/cover no-repeat;
+        }
+       
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: #166534;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover:after {
+            width: 100%;
+        }
+       
+        .table-row:hover {
+            background-color: #f8fafc;
+        }
+        .lang-btn {
+            transition: all 0.3s ease;
+        }
+        .lang-btn.active {
+            background-color: #166534;
+            color: white;
+            box-shadow: 0 4px 15px -3px rgb(22 101 52);
+        }
+
+        /* Compact Product Cards - Noon/Amazon Style */
+        .compact-card {
+            transition: all 0.3s ease;
+        }
+        .compact-card:active {
+            transform: scale(0.96);
+        }
+        .compact-img {
+            height: 160px;
+            object-fit: cover;
+        }
+
+        /* Receipt Modal - Standard Grocery Bill Look */
+        .receipt {
+            font-family: 'Courier New', monospace;
+            background: white;
+            border: 2px dashed #166534;
+            max-width: 380px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body class="bg-gray-50">
-
-<div class="bg-green-900 text-white text-[11px] md:text-sm py-2 text-center font-medium">
-    🚚 Free Delivery on orders above 2000 PKR in Banda Nabi! | 📞 0340-1915677
-</div>
-
-<nav class="glass-nav shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 md:px-6 h-20 flex justify-between items-center">
-        <div onclick="showSection('home')" class="flex items-center gap-3 cursor-pointer group">
-            <div class="bg-green-700 p-2.5 rounded-2xl text-white shadow-lg group-hover:rotate-6 transition-transform">
-                <i class="fas fa-shopping-basket text-2xl"></i>
+<!-- MODERN NAVBAR WITH LANGUAGE TOGGLE -->
+<nav class="bg-white shadow-xl sticky top-0 z-50 border-b border-green-100">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+       
+        <!-- Logo with Shopping Trolley -->
+        <div class="flex items-center gap-3">
+            <div class="bg-green-700 text-white p-3 rounded-2xl flex items-center justify-center shadow-inner">
+                <i class="fas fa-shopping-cart text-4xl"></i>
             </div>
             <div>
-                <h1 class="text-xl font-black text-green-900 leading-none">IHSAN UL & SONS STORE</h1>
-                <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold">The Quality Supermarket</p>
+                <h1 id="logo-title" class="text-3xl font-bold text-green-800 tracking-tight">Ihsan Ul Haq & Sons</h1>
+                <p id="logo-subtitle" class="text-xs text-gray-500 -mt-1 font-medium">GENERAL STORE • BANDA NABI</p>
             </div>
         </div>
-
-        <div class="hidden lg:flex items-center gap-8 font-semibold text-gray-600">
-            <a href="javascript:void(0)" onclick="showSection('home')" class="hover:text-green-700">Home</a>
-            <a href="javascript:void(0)" onclick="showSection('shop')" class="hover:text-green-700">All Products</a>
-            <button onclick="showSection('admin')" class="text-gray-300 hover:text-green-700 transition"><i class="fas fa-user-shield"></i></button>
+        <!-- Language Toggle -->
+        <div class="flex items-center gap-2 bg-gray-100 rounded-3xl p-1">
+            <button onclick="setLanguage('en')" id="lang-en"
+                    class="lang-btn px-6 py-2 rounded-3xl text-sm font-medium">English</button>
+            <button onclick="setLanguage('ur')" id="lang-ur"
+                    class="lang-btn px-6 py-2 rounded-3xl text-sm font-medium">اردو</button>
         </div>
-
-        <div class="flex items-center gap-4">
-            <div onclick="showCart()" class="relative bg-green-100 p-3 rounded-2xl cursor-pointer hover:bg-green-200 transition shadow-sm">
-                <i class="fas fa-shopping-cart text-green-800 text-xl"></i>
-                <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold h-6 w-6 flex items-center justify-center rounded-full border-2 border-white">0</span>
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-2xl mx-8">
+            <div class="relative">
+                <input
+                    id="search"
+                    type="text"
+                    placeholder="Search Dalda, Coca Cola, Bananas..."
+                    class="w-full px-6 py-4 text-lg border-2 border-green-700 rounded-3xl focus:outline-none focus:border-green-800 placeholder-gray-400"
+                    onkeyup="if(event.key === 'Enter') liveSearch()">
+                <button onclick="liveSearch()"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 bg-green-700 hover:bg-green-800 text-white px-7 py-3 rounded-3xl text-xl transition">
+                    <i class="fas fa-search"></i>
+                </button>
+                <div id="search-suggestions" class="hidden absolute top-full mt-2 bg-white shadow-2xl rounded-3xl w-full max-h-96 overflow-auto border border-gray-200 z-50"></div>
+            </div>
+        </div>
+        <!-- Right Menu -->
+        <div class="flex items-center gap-9 text-lg font-medium text-gray-700">
+            <a href="#" id="nav-home" onclick="showSection('home')" class="nav-link">Home</a>
+            <a href="#" id="nav-shop" onclick="showSection('shop')" class="nav-link">Shop</a>
+            <a href="#" id="nav-admin" onclick="showSection('admin')" class="nav-link font-semibold text-green-700">Admin</a>
+           
+            <!-- Cart -->
+            <div onclick="showCart()" class="relative cursor-pointer flex items-center gap-1 hover:text-green-700 transition">
+                <i class="fas fa-shopping-cart text-3xl"></i>
+                <span id="cart-count"
+                      class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full shadow">0</span>
             </div>
         </div>
     </div>
 </nav>
-
-<section id="home" class="animate-fadeIn">
-    <div class="bg-green-800 py-16 px-6 text-white relative overflow-hidden">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between relative z-10">
-            <div class="text-center md:text-left">
-                <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight">Fresh Grocery <br><span class="text-yellow-400">At Your Doorstep</span></h1>
-                <p class="text-lg opacity-80 mb-10 max-w-lg">Banda Nabi's most trusted supermarket. Get wholesale prices on retail items.</p>
-                <button onclick="showSection('shop')" class="bg-white text-green-800 px-10 py-4 rounded-2xl font-bold text-lg shadow-xl hover:scale-105 transition">Start Shopping</button>
-            </div>
-            <div class="hidden md:block w-1/3">
-                <i class="fas fa-box-open text-[200px] opacity-10"></i>
-            </div>
+<!-- HERO BANNER -->
+<section id="home" class="hero-bg text-white py-28">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+        <div class="max-w-3xl mx-auto">
+            <h1 id="hero-title" class="text-6xl md:text-7xl font-bold leading-none mb-6 tracking-tighter">
+                Fresh Quality<br>Delivered to Your Door
+            </h1>
+            <p id="hero-subtitle" class="text-2xl md:text-3xl mb-10 text-green-100">
+                Banda Nabi Raksha Adda • Free Delivery on PKR 10,000+
+            </p>
+            <button onclick="showSection('shop')" id="shop-now-btn"
+                    class="bg-white text-green-800 px-14 py-6 rounded-3xl text-2xl font-semibold hover:bg-green-50 active:scale-95 transition shadow-2xl">
+                Shop Now →
+            </button>
         </div>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 py-10 overflow-x-auto category-scroll">
-        <div class="flex gap-4 min-w-max" id="home-cat-row"></div>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 mb-16">
-        <div class="bg-red-50 p-8 rounded-[2.5rem] border border-red-100 relative">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-black text-red-600 flex items-center gap-2"><i class="fas fa-bolt"></i> Flash Sale</h2>
-                <span class="text-sm font-bold bg-red-600 text-white px-4 py-1 rounded-full">Ending Soon</span>
-            </div>
-            <div id="flash-sale-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
-        </div>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 pb-20">
-        <h2 class="text-3xl font-black text-gray-900 mb-8 border-l-8 border-green-600 pl-4">Trending Now</h2>
-        <div id="trending-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6"></div>
     </div>
 </section>
-
-<section id="shop" class="max-w-7xl mx-auto px-4 py-8 hidden">
-    <div class="flex flex-col lg:flex-row gap-8">
-        <aside class="w-full lg:w-64 space-y-4">
-            <div class="bg-white p-6 rounded-3xl border shadow-sm">
-                <h3 class="font-bold mb-6 text-gray-400 uppercase text-xs tracking-widest">Filter By Category</h3>
-                <div id="sidebar-cats" class="space-y-1"></div>
-            </div>
-        </aside>
-
-        <main class="flex-1">
-            <div class="bg-white p-4 rounded-3xl shadow-sm border mb-8 flex items-center gap-4">
-                <i class="fas fa-search text-gray-300 ml-4"></i>
-                <input type="text" id="shop-search" onkeyup="liveSearch()" placeholder="Search for Oil, Ghee, Soap..." class="w-full py-2 bg-transparent outline-none text-lg">
-            </div>
-            <h2 id="cat-title" class="text-2xl font-black text-gray-800 mb-6">All Products</h2>
-            <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div>
-        </main>
-    </div>
-</section>
-
-<div id="cart-drawer" class="fixed inset-0 z-[100] hidden">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="showCart()"></div>
-    <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col animate-slideInRight">
-        <div class="p-6 border-b flex justify-between items-center bg-green-50">
-            <h3 class="text-xl font-black text-green-900 uppercase">Your Basket</h3>
-            <button onclick="showCart()" class="text-3xl text-gray-400">&times;</button>
+<!-- NEW HOME LAYOUT: CENTER PRODUCTS + RIGHT SIDE FILTERS & CATEGORIES WITH COUNT -->
+<div class="max-w-7xl mx-auto px-6 py-12">
+    <h2 id="our-products-title" class="text-4xl font-bold text-green-800 mb-8 flex items-center justify-between">
+        Our Products
+        <span onclick="resetHomeFilter()" class="text-sm font-medium text-green-700 cursor-pointer hover:underline flex items-center gap-1">
+            <i class="fas fa-sync"></i> <span id="reset-text">Reset All</span>
+        </span>
+    </h2>
+   
+    <div class="flex gap-8">
+       
+        <!-- CENTER PRODUCTS -->
+        <div class="flex-1">
+            <div id="home-product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
         </div>
-        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-6"></div>
-        <div class="p-8 border-t bg-white shadow-inner">
-            <div class="flex justify-between text-2xl font-black text-green-900 mb-6">
-                <span>Total:</span>
-                <span id="cart-total">0 PKR</span>
+        <!-- RIGHT SIDEBAR -->
+        <div class="w-80 bg-white rounded-3xl shadow p-6 h-fit sticky top-8">
+           
+            <!-- Quick Filters -->
+            <h3 id="quick-filters-title" class="font-semibold text-xl mb-4 flex items-center gap-2"><i class="fas fa-bolt text-green-700"></i> Quick Filters</h3>
+            <div class="space-y-3 mb-10">
+                <button onclick="filterHomeByTag('trending')" id="filter-trending"
+                        class="w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 rounded-2xl text-left font-medium transition">
+                    🔥 Trending
+                </button>
+                <button onclick="filterHomeByTag('new')" id="filter-new"
+                        class="w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 rounded-2xl text-left font-medium transition">
+                    🆕 New Arrivals
+                </button>
+                <button onclick="filterHomeByTag('offer')" id="filter-offer"
+                        class="w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 rounded-2xl text-left font-medium transition">
+                    💰 Special Offers
+                </button>
             </div>
-            <button onclick="goToCheckout()" class="w-full bg-green-700 text-white py-5 rounded-2xl font-black text-lg shadow-xl hover:bg-green-800 transition">Proceed to Checkout</button>
+            <!-- Categories with Count -->
+            <h3 id="categories-title" class="font-semibold text-xl mb-4 flex items-center gap-2"><i class="fas fa-tags text-green-700"></i> Categories</h3>
+            <div id="home-categories" class="space-y-1 max-h-96 overflow-auto"></div>
         </div>
     </div>
 </div>
-
-<section id="checkout" class="max-w-4xl mx-auto px-4 py-12 hidden">
-    <div class="bg-white rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border">
-        <div class="flex-1 p-10">
-            <h2 class="text-3xl font-black text-green-900 mb-8">Shipping Details</h2>
-            <div class="space-y-4">
-                <input id="c-name" type="text" placeholder="Full Name" class="w-full bg-gray-50 border p-4 rounded-2xl outline-none focus:ring-2 focus:ring-green-500">
-                <input id="c-phone" type="tel" placeholder="WhatsApp Number (03xxxxxxxxx)" class="w-full bg-gray-50 border p-4 rounded-2xl outline-none focus:ring-2 focus:ring-green-500">
-                <textarea id="c-address" rows="3" placeholder="Complete Address in Banda Nabi" class="w-full bg-gray-50 border p-4 rounded-2xl outline-none focus:ring-2 focus:ring-green-500"></textarea>
-                
-                <div class="pt-4">
-                    <label class="block font-bold mb-4">Payment Method</label>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <label class="border-2 p-4 rounded-2xl flex flex-col items-center cursor-pointer hover:border-green-500">
-                            <input type="radio" name="pay" value="COD" checked> <span class="text-xs font-bold mt-2">Cash on Delivery</span>
-                        </label>
-                        <label class="border-2 p-4 rounded-2xl flex flex-col items-center cursor-pointer hover:border-green-500">
-                            <input type="radio" name="pay" value="JazzCash"> <span class="text-xs font-bold mt-2">JazzCash</span>
-                        </label>
-                        <label class="border-2 p-4 rounded-2xl flex flex-col items-center cursor-pointer hover:border-green-500">
-                            <input type="radio" name="pay" value="EasyPaisa"> <span class="text-xs font-bold mt-2">EasyPaisa</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
+<!-- CATEGORIES BAR -->
+<section class="max-w-7xl mx-auto px-6 py-8 border-t border-b bg-white">
+    <h2 id="shop-by-category-title" class="text-3xl font-bold text-center mb-6 text-green-800">Shop by Category</h2>
+    <div id="category-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+</section>
+<!-- SHOP SECTION -->
+<section id="shop" class="max-w-7xl mx-auto px-6 py-12 hidden">
+    <div class="flex gap-8">
+        <div class="w-72 hidden lg:block bg-white rounded-3xl shadow p-6 h-fit sticky top-8">
+            <h3 id="filters-title" class="font-semibold text-xl mb-6 flex items-center gap-2"><i class="fas fa-filter"></i> Filters</h3>
+            <div id="sidebar-categories" class="space-y-2"></div>
         </div>
-        <div class="w-full md:w-80 bg-green-50 p-10 flex flex-col">
-            <h3 class="font-black text-xl mb-6">Summary</h3>
-            <div id="checkout-list" class="flex-1 space-y-2 text-sm text-gray-600"></div>
-            <div class="border-t pt-4 mt-6">
-                <div class="flex justify-between font-black text-2xl text-green-900">
-                    <span>Total</span>
-                    <span id="final-price">0</span>
-                </div>
-            </div>
-            <button onclick="confirmOrder()" class="w-full bg-green-700 text-white py-5 rounded-2xl mt-8 font-black shadow-lg">Place Order</button>
+        <div class="flex-1">
+            <h2 id="all-products-title" class="text-4xl font-bold text-green-800 mb-8">All Products</h2>
+            <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
         </div>
     </div>
 </section>
-
-<section id="admin" class="max-w-7xl mx-auto px-4 py-12 hidden">
-    <div id="admin-login" class="max-w-md mx-auto bg-white p-10 rounded-[2.5rem] shadow-2xl text-center border">
-        <i class="fas fa-lock text-5xl text-green-700 mb-6"></i>
-        <h2 class="text-2xl font-black mb-6">Staff Access Only</h2>
-        <input id="adm-pass" type="password" placeholder="Password" class="w-full p-4 border rounded-2xl mb-4 text-center">
-        <button onclick="checkAdmin()" class="w-full bg-green-900 text-white py-4 rounded-2xl font-bold">Login Dashboard</button>
+<!-- CART MODAL -->
+<div id="cart-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] p-4">
+    <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl">
+        <div class="p-8">
+            <div class="flex justify-between items-center mb-8">
+                <h3 id="your-cart-title" class="text-4xl font-bold text-green-800">Your Cart</h3>
+                <button onclick="hideCart()" class="text-5xl text-gray-400 hover:text-red-600 transition">×</button>
+            </div>
+            <div id="cart-items" class="space-y-8 max-h-[55vh] overflow-y-auto pr-2"></div>
+           
+            <div class="border-t pt-8 mt-8">
+                <div class="flex justify-between text-xl mb-2"><span id="subtotal-label">Subtotal</span><span id="subtotal">0 PKR</span></div>
+                <div class="flex justify-between text-xl mb-2"><span id="delivery-fee-label">Delivery Fee</span><span id="delivery-fee">0 PKR</span></div>
+                <div class="flex justify-between text-3xl font-bold text-green-800"><span id="total-label">Total</span><span id="total">0 PKR</span></div>
+            </div>
+           
+            <button onclick="checkout()" id="proceed-checkout-btn"
+                    class="w-full mt-10 bg-green-700 hover:bg-green-800 text-white py-6 text-2xl font-semibold rounded-3xl transition">
+                Proceed to Checkout
+            </button>
+        </div>
     </div>
+</div>
+<!-- CHECKOUT -->
+<section id="checkout" class="max-w-2xl mx-auto px-6 py-16 hidden">
+    <div class="bg-white rounded-3xl shadow-2xl p-10">
+        <h2 id="checkout-title" class="text-4xl font-bold text-green-800 mb-10">Checkout</h2>
+       
+        <div class="space-y-8">
+            <div>
+                <label id="customer-name-label" class="block text-sm font-medium mb-2">Customer Name</label>
+                <input id="customer-name" type="text" class="w-full border-2 border-gray-300 focus:border-green-700 p-5 rounded-3xl text-lg" placeholder="Full Name">
+            </div>
+            <div>
+                <label id="phone-label" class="block text-sm font-medium mb-2">Phone Number <span id="whatsapp-required" class="text-red-500">(Required for WhatsApp)</span></label>
+                <input id="customer-phone" type="tel" class="w-full border-2 border-gray-300 focus:border-green-700 p-5 rounded-3xl text-lg" placeholder="03XX-XXXXXXX">
+            </div>
+            <div>
+                <label id="delivery-area-label" class="block text-sm font-medium mb-2">Delivery Area</label>
+                <select id="area" onchange="calculateDelivery()" class="w-full border-2 border-gray-300 focus:border-green-700 p-5 rounded-3xl text-lg">
+                    <option value="Banda Nabi">Banda Nabi</option>
+                    <option value="Nowshera">Nowshera</option>
+                    <option value="Pabbi">Pabbi</option>
+                    <option value="Taru Jaba">Taru Jaba</option>
+                </select>
+            </div>
+            <div>
+                <label id="full-address-label" class="block text-sm font-medium mb-2">Full Address</label>
+                <textarea id="address" rows="3" class="w-full border-2 border-gray-300 focus:border-green-700 p-5 rounded-3xl text-lg"></textarea>
+            </div>
+        </div>
+        <div class="mt-12">
+            <label id="payment-method-label" class="block text-sm font-medium mb-4">Payment Method</label>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="selectPayment(this, 'easypaisa')" class="payment-btn border-2 border-gray-300 hover:border-green-700 p-6 rounded-3xl text-center transition">EasyPaisa<br><span class="text-sm font-medium">03195894880</span></button>
+                <button onclick="selectPayment(this, 'jazzcash')" class="payment-btn border-2 border-gray-300 hover:border-green-700 p-6 rounded-3xl text-center transition">JazzCash<br><span class="text-sm font-medium">03401915677</span></button>
+                <button onclick="selectPayment(this, 'bank')" class="payment-btn border-2 border-gray-300 hover:border-green-700 p-6 rounded-3xl text-center transition">Bank Transfer</button>
+                <button onclick="selectPayment(this, 'cod')" class="payment-btn border-2 border-gray-300 hover:border-green-700 p-6 rounded-3xl text-center transition">Cash on Delivery</button>
+            </div>
+        </div>
+        <button onclick="placeOrder()" id="place-order-btn"
+                class="w-full mt-12 bg-green-700 hover:bg-green-800 text-white py-7 text-2xl font-bold rounded-3xl transition">
+            Place Order • <span id="final-total">0 PKR</span>
+        </button>
+    </div>
+</section>
+<!-- PROFESSIONAL RECEIPT MODAL (Printable Grocery Bill) -->
+<div id="receipt-modal" onclick="if(event.target.id === 'receipt-modal') hideReceipt()" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[200] p-4">
+    <div onclick="event.stopImmediatePropagation()" class="receipt w-full max-w-[380px] rounded-3xl">
+        <div class="text-center border-b pb-4 mb-4">
+            <h1 class="text-2xl font-black text-green-800">IHSAN UL HAQ & SONS</h1>
+            <p class="text-xs text-gray-600">Banda Nabi Raksha Adda • Nowshera</p>
+            <p id="receipt-date" class="text-xs text-gray-500 mt-1"></p>
+        </div>
+        
+        <div class="text-xs mb-4">
+            <div class="flex justify-between mb-1"><span id="receipt-name-label">Customer:</span><span id="receipt-name"></span></div>
+            <div class="flex justify-between"><span id="receipt-phone-label">Phone:</span><span id="receipt-phone"></span></div>
+        </div>
 
-    <div id="admin-panel" class="hidden">
+        <table class="w-full text-xs mb-6">
+            <thead>
+                <tr class="border-b">
+                    <th class="text-left py-1">Item</th>
+                    <th class="text-center py-1">Qty</th>
+                    <th class="text-right py-1">Amount</th>
+                </tr>
+            </thead>
+            <tbody id="receipt-items" class="divide-y"></tbody>
+        </table>
+
+        <div class="border-t pt-3">
+            <div class="flex justify-between text-sm font-medium"><span id="receipt-subtotal-label">Subtotal</span><span id="receipt-subtotal"></span></div>
+            <div class="flex justify-between text-sm font-medium"><span id="receipt-delivery-label">Delivery</span><span id="receipt-delivery">0 PKR</span></div>
+            <div class="flex justify-between text-lg font-black mt-3 border-t pt-3"><span id="receipt-total-label">TOTAL</span><span id="receipt-total"></span></div>
+        </div>
+
+        <div class="text-center text-xs text-gray-500 mt-8">
+            Thank you for shopping with us!<br>
+            Powered by Ihsan Store • Call: 0340-1915677
+        </div>
+
+        <div class="flex gap-3 mt-8">
+            <button onclick="hideReceipt()" class="flex-1 py-4 text-sm font-bold border rounded-3xl">Close</button>
+            <button onclick="sendWhatsAppFromReceipt()" class="flex-1 py-4 text-sm font-bold bg-green-700 text-white rounded-3xl">Send on WhatsApp</button>
+        </div>
+    </div>
+</div>
+<!-- ADMIN PANEL -->
+<section id="admin" class="max-w-7xl mx-auto px-6 py-12 hidden">
+    <div class="bg-white rounded-3xl shadow-2xl p-10">
         <div class="flex justify-between items-center mb-10">
-            <h2 class="text-3xl font-black text-gray-800">Admin Console</h2>
-            <button onclick="logoutAdmin()" class="bg-red-50 text-red-600 px-6 py-2 rounded-xl font-bold">Logout</button>
+            <h2 id="admin-dashboard-title" class="text-4xl font-bold text-green-800">Admin Dashboard</h2>
+            <button onclick="logoutAdmin()" id="logout-btn" class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-3xl text-lg">Logout</button>
         </div>
-
-        <div class="flex gap-4 border-b mb-8 overflow-x-auto">
-            <button onclick="switchTab(0)" id="t0" class="admin-tab-active pb-4 px-4 whitespace-nowrap">Manage Products</button>
-            <button onclick="switchTab(1)" id="t1" class="text-gray-400 pb-4 px-4 whitespace-nowrap">Add New Item</button>
-            <button onclick="switchTab(2)" id="t2" class="text-gray-400 pb-4 px-4 whitespace-nowrap">Recent Orders</button>
+       
+        <!-- Stats Row -->
+        <div class="grid grid-cols-3 gap-6 mb-10">
+            <div class="bg-green-50 rounded-3xl p-6 text-center">
+                <p id="total-products-label" class="text-sm text-green-700 font-medium">Total Products</p>
+                <p id="stat-total-products" class="text-5xl font-bold text-green-800">0</p>
+            </div>
+            <div class="bg-amber-50 rounded-3xl p-6 text-center">
+                <p id="low-stock-label" class="text-sm text-amber-700 font-medium">Low Stock Items</p>
+                <p id="stat-low-stock" class="text-5xl font-bold text-amber-800">0</p>
+            </div>
+            <div class="bg-blue-50 rounded-3xl p-6 text-center">
+                <p id="pending-orders-label" class="text-sm text-blue-700 font-medium">Pending Orders</p>
+                <p id="stat-pending-orders" class="text-5xl font-bold text-blue-800">0</p>
+            </div>
         </div>
-
-        <div id="pan0" class="bg-white p-6 rounded-3xl shadow-sm border">
+       
+        <div class="flex border-b mb-10">
+            <button onclick="switchAdminTab(0)" id="tab-products-btn" class="px-10 py-4 font-semibold border-b-4 border-green-700">Products</button>
+            <button onclick="switchAdminTab(1)" id="tab-orders-btn" class="px-10 py-4 font-semibold">Orders
+                <span id="orders-count-badge" class="ml-2 bg-red-500 text-white text-xs px-3 py-1 rounded-full"></span>
+            </button>
+        </div>
+        <!-- Products Tab -->
+        <div id="admin-products-tab">
+            <div class="grid md:grid-cols-2 gap-12 mb-12">
+                <div>
+                    <h3 id="add-new-product-title" class="text-2xl font-semibold mb-6">Add New Product</h3>
+                    <input id="p-name" type="text" placeholder="Product Name *" class="w-full mb-4 p-5 border-2 rounded-3xl">
+                    <input id="p-price" type="number" placeholder="Price in PKR *" class="w-full mb-4 p-5 border-2 rounded-3xl">
+                    <input id="p-stock" type="number" value="50" placeholder="Stock Quantity *" class="w-full mb-4 p-5 border-2 rounded-3xl">
+                    <select id="p-category" class="w-full mb-4 p-5 border-2 rounded-3xl">
+                        <option>Grocery</option>
+                        <option>Fruits & Vegetables</option>
+                        <option>Cold Drinks</option>
+                        <option>Ice Creams</option>
+                        <option>Biscuits & Snacks</option>
+                        <option>Baby Care</option>
+                        <option>Household</option>
+                    </select>
+                    <textarea id="p-desc" placeholder="Description" class="w-full p-5 border-2 rounded-3xl" rows="3"></textarea>
+                   
+                    <div class="mt-6 border-2 border-dashed border-green-300 rounded-3xl p-8 text-center">
+                        <input type="file" id="p-image-upload" accept="image/*" class="hidden" onchange="previewLocalImage(event)">
+                        <button onclick="document.getElementById('p-image-upload').click()" id="choose-image-btn" class="bg-green-100 text-green-700 px-8 py-4 rounded-2xl">📸 Choose Image</button>
+                        <p id="or-text" class="my-4 text-gray-400">OR</p>
+                        <input id="p-image-url" type="text" placeholder="Paste Image URL" class="w-full p-5 border-2 rounded-3xl">
+                    </div>
+                    <div id="image-preview" class="hidden mt-6"><img id="preview-img" class="rounded-3xl border w-full"></div>
+                   
+                    <button onclick="addProduct()" id="add-product-btn" class="w-full bg-green-700 text-white py-5 rounded-3xl mt-6 text-xl font-semibold">Add Product</button>
+                </div>
+                <div>
+                    <h3 id="bulk-import-title" class="text-2xl font-semibold mb-6">Bulk Import CSV</h3>
+                    <button onclick="downloadSampleCSV()" id="download-sample-btn" class="w-full bg-blue-600 text-white py-5 rounded-3xl mb-6 flex items-center justify-center gap-3">
+                        <i class="fas fa-download"></i> Download Sample CSV
+                    </button>
+                    <input type="file" id="csv-upload" accept=".csv" onchange="importCSV(event)" class="w-full border-2 p-6 rounded-3xl">
+                </div>
+            </div>
+            <h3 id="all-products-table-title" class="text-2xl font-semibold mb-6">All Products</h3>
             <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-gray-400 text-xs uppercase">
-                        <tr>
-                            <th class="p-4">Item</th>
-                            <th class="p-4">Price</th>
-                            <th class="p-4">Flash/Trend</th>
-                            <th class="p-4">Actions</th>
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="text-left p-4 font-medium">Image</th>
+                            <th class="text-left p-4 font-medium">Product Name</th>
+                            <th class="text-left p-4 font-medium">Price</th>
+                            <th class="text-left p-4 font-medium">Stock</th>
+                            <th class="text-left p-4 font-medium">Category</th>
+                            <th class="text-left p-4 font-medium">Discount</th>
+                            <th class="text-center p-4 font-medium">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="inventory-table" class="divide-y"></tbody>
+                    <tbody id="admin-product-table" class="text-sm"></tbody>
                 </table>
             </div>
         </div>
-
-        <div id="pan1" class="hidden bg-white p-8 rounded-3xl shadow-sm border max-w-2xl mx-auto">
-            <div class="space-y-4">
-                <input id="n-name" type="text" placeholder="Product Name" class="w-full border p-4 rounded-2xl">
-                <input id="n-price" type="number" placeholder="Price" class="w-full border p-4 rounded-2xl">
-                <select id="n-cat" class="w-full border p-4 rounded-2xl">
-                    <option>Grocery</option><option>Fruits & Vegetables</option><option>Cold Drinks</option><option>Household</option>
-                </select>
-                <input id="n-img" type="text" placeholder="Image URL (Link)" class="w-full border p-4 rounded-2xl">
-                <button onclick="saveProduct()" class="w-full bg-green-700 text-white py-4 rounded-2xl font-bold">Add Product to Store</button>
-            </div>
-        </div>
-
-        <div id="pan2" class="hidden bg-white p-6 rounded-3xl shadow-sm border">
-            <div id="orders-list" class="space-y-4"></div>
+        <!-- Orders Tab -->
+        <div id="admin-orders-tab" class="hidden">
+            <h3 id="all-orders-title" class="text-2xl font-semibold mb-6">All Orders</h3>
+            <div id="orders-list" class="space-y-6"></div>
         </div>
     </div>
 </section>
-
-<footer class="bg-gray-900 text-gray-500 py-20 mt-20">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-        <h3 class="text-white text-2xl font-bold mb-4">Ihsan Ul Haq & Sons Store</h3>
-        <p class="max-w-md mx-auto mb-10 text-sm">Nowshera, Banda Nabi Raksha Adda near Govt High School.</p>
-        <div class="flex justify-center gap-6">
-            <a href="https://wa.me/923401915677" class="text-green-500 text-4xl"><i class="fab fa-whatsapp"></i></a>
-            <a href="tel:03401915677" class="text-blue-500 text-4xl"><i class="fas fa-phone-alt"></i></a>
+<!-- EDIT PRODUCT MODAL -->
+<div id="edit-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[99999]">
+    <div class="bg-white rounded-3xl w-full max-w-4xl mx-4 p-10 max-h-[95vh] overflow-y-auto">
+        <div class="flex justify-between mb-8">
+            <h3 id="edit-product-title" class="text-3xl font-bold">Edit Product</h3>
+            <button onclick="closeEditModal()" class="text-5xl text-gray-400 hover:text-red-500">×</button>
         </div>
-    </div>
-</footer>
-
-<script>
-// ================== MASTER DATA ==================
-let products = JSON.parse(localStorage.getItem('ihsan_super_db')) || [
-    {id: 1, name: "Dalda Ghee 5L", price: 2350, category: "Grocery", img: "https://picsum.photos/id/201/400/400", flash: true, trending: true},
-    {id: 2, name: "Sella Rice 5kg", price: 1680, category: "Grocery", img: "https://picsum.photos/id/202/400/400", flash: false, trending: true},
-    {id: 3, name: "Pepsi 1.5L Case", price: 960, category: "Cold Drinks", img: "https://picsum.photos/id/203/400/400", flash: true, trending: false},
-    {id: 4, name: "Lays Family Pack", price: 120, category: "Biscuits & Snacks", img: "https://picsum.photos/id/204/400/400", flash: false, trending: true}
-];
-
-let orders = JSON.parse(localStorage.getItem('ihsan_orders_db')) || [];
-let cart = [];
-const categories = ["All", "Grocery", "Fruits & Vegetables", "Cold Drinks", "Ice Creams", "Biscuits & Snacks", "Household", "Baby Care"];
-
-// ================== APP ENGINE ==================
-window.onload = () => {
-    initHome();
-    initSidebar();
-    renderProducts(products);
-    updateCartCount();
-};
-
-function initHome() {
-    const catRow = document.getElementById('home-cat-row');
-    catRow.innerHTML = categories.slice(1).map(c => `
-        <div onclick="filterByCategory('${c}')" class="bg-white px-8 py-6 rounded-3xl shadow-sm border hover:border-green-500 cursor-pointer transition flex flex-col items-center gap-2">
-            <div class="bg-green-50 h-12 w-12 rounded-full flex items-center justify-center text-green-700"><i class="fas fa-shopping-basket"></i></div>
-            <span class="font-bold text-gray-700">${c}</span>
-        </div>
-    `).join('');
-
-    const flash = products.filter(p => p.flash);
-    document.getElementById('flash-sale-grid').innerHTML = flash.map(p => createCard(p, true)).join('');
-
-    const trending = products.filter(p => p.trending);
-    document.getElementById('trending-grid').innerHTML = trending.map(p => createCard(p)).join('');
-}
-
-function initSidebar() {
-    document.getElementById('sidebar-cats').innerHTML = categories.map(c => `
-        <button onclick="filterByCategory('${c}')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-green-700 hover:text-white font-semibold transition">
-            ${c}
-        </button>
-    `).join('');
-}
-
-function showSection(id) {
-    document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
-    window.scrollTo(0,0);
-}
-
-function createCard(p, isFlash = false) {
-    return `
-        <div class="product-card bg-white rounded-[2rem] overflow-hidden border flex flex-col shadow-sm">
-            <div class="relative">
-                <img src="${p.img}" class="w-full h-44 object-cover">
-                <button onclick="addToCart(${p.id})" class="absolute bottom-3 right-3 bg-green-700 text-white h-10 w-10 rounded-xl shadow-lg hover:bg-green-800 transition">
-                    <i class="fas fa-plus"></i>
-                </button>
-                ${isFlash ? '<span class="absolute top-3 left-3 bg-red-600 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase">Sale</span>' : ''}
+       
+        <div class="grid md:grid-cols-2 gap-10">
+            <div>
+                <input id="edit-name" type="text" class="w-full mb-4 p-5 border-2 rounded-3xl" placeholder="Product Name">
+                <input id="edit-price" type="number" class="w-full mb-4 p-5 border-2 rounded-3xl" placeholder="Price">
+                <input id="edit-stock" type="number" class="w-full mb-4 p-5 border-2 rounded-3xl" placeholder="Stock">
+                <select id="edit-category" class="w-full mb-4 p-5 border-2 rounded-3xl">
+                    <option>Grocery</option><option>Fruits & Vegetables</option><option>Cold Drinks</option>
+                    <option>Ice Creams</option><option>Biscuits & Snacks</option><option>Baby Care</option><option>Household</option>
+                </select>
+                <textarea id="edit-desc" class="w-full p-5 border-2 rounded-3xl" rows="4" placeholder="Description"></textarea>
             </div>
-            <div class="p-4 flex flex-col flex-1">
-                <h4 class="font-bold text-gray-800 text-sm truncate">${p.name}</h4>
-                <p class="text-xs text-gray-400 mb-4">${p.category}</p>
-                <div class="mt-auto">
-                    <p class="text-lg font-black text-green-700">${p.price} <span class="text-[10px]">PKR</span></p>
+           
+            <div>
+                <div class="border-2 border-dashed border-green-300 rounded-3xl p-8 text-center mb-8">
+                    <input type="file" id="edit-image-upload" accept="image/*" class="hidden" onchange="previewEditImage(event)">
+                    <button onclick="document.getElementById('edit-image-upload').click()" class="bg-green-100 text-green-700 px-8 py-4 rounded-2xl w-full mb-4">📸 Change Image</button>
+                    <input id="edit-image-url" type="text" placeholder="Or paste new URL" class="w-full p-5 border-2 rounded-3xl">
                 </div>
-            </div>
-        </div>
-    `;
-}
-
-function renderProducts(list) {
-    document.getElementById('product-grid').innerHTML = list.map(p => createCard(p)).join('');
-}
-
-function filterByCategory(c) {
-    showSection('shop');
-    document.getElementById('cat-title').innerText = c;
-    const filtered = (c === "All") ? products : products.filter(p => p.category === c);
-    renderProducts(filtered);
-}
-
-function liveSearch() {
-    const term = document.getElementById('shop-search').value.toLowerCase();
-    const filtered = products.filter(p => p.name.toLowerCase().includes(term));
-    renderProducts(filtered);
-}
-
-// ================== CART ENGINE ==================
-function showCart() {
-    const drawer = document.getElementById('cart-drawer');
-    drawer.classList.toggle('hidden');
-    renderCart();
-}
-
-function addToCart(id) {
-    const p = products.find(x => x.id === id);
-    const existing = cart.find(x => x.id === id);
-    if(existing) existing.qty++;
-    else cart.push({...p, qty: 1});
-    updateCartCount();
-}
-
-function updateCartCount() {
-    document.getElementById('cart-count-badge').innerText = cart.reduce((a, b) => a + b.qty, 0);
-}
-
-function renderCart() {
-    const container = document.getElementById('cart-items');
-    let total = 0;
-    container.innerHTML = cart.map((item, i) => {
-        total += (item.price * item.qty);
-        return `
-            <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl">
-                <img src="${item.img}" class="w-16 h-16 rounded-xl object-cover">
-                <div class="flex-1">
-                    <h5 class="font-bold text-sm text-gray-800">${item.name}</h5>
-                    <p class="text-green-700 font-bold">${item.price} PKR</p>
-                    <div class="flex items-center gap-3 mt-2">
-                        <button onclick="updateQty(${i}, -1)" class="w-7 h-7 border rounded-full bg-white">-</button>
-                        <span class="font-bold text-sm">${item.qty}</span>
-                        <button onclick="updateQty(${i}, 1)" class="w-7 h-7 border rounded-full bg-white">+</button>
+                <div id="edit-preview" class="hidden mb-8">
+                    <p class="text-sm text-gray-500 mb-2">Current Preview</p>
+                    <img id="edit-preview-img" class="w-full rounded-3xl border">
+                </div>
+                <div class="bg-gray-50 p-6 rounded-3xl">
+                    <p class="font-semibold mb-4">Tags</p>
+                    <div class="grid grid-cols-1 gap-4">
+                        <label class="flex items-center gap-3"><input type="checkbox" id="tag-trending" class="w-5 h-5 accent-green-700"> 🔥 Trending</label>
+                        <label class="flex items-center gap-3"><input type="checkbox" id="tag-new" class="w-5 h-5 accent-green-700"> 🆕 New Arrival</label>
+                        <label class="flex items-center gap-3"><input type="checkbox" id="tag-offer" class="w-5 h-5 accent-green-700" onchange="toggleDiscountField()"> 💰 Special Offer</label>
+                    </div>
+                    <div id="offer-row" class="mt-6 hidden">
+                        <label class="block text-sm mb-2">Discount Percentage (%)</label>
+                        <input id="edit-discount" type="number" min="0" max="99" value="0" class="w-full p-5 border-2 rounded-3xl text-center text-3xl font-bold">
                     </div>
                 </div>
-                <button onclick="removeCart(${i})" class="text-red-300 hover:text-red-500"><i class="fas fa-trash"></i></button>
-            </div>
-        `;
-    }).join('');
-    document.getElementById('cart-total').innerText = `${total} PKR`;
-}
-
-function updateQty(i, d) {
-    cart[i].qty += d;
-    if(cart[i].qty <= 0) cart.splice(i, 1);
-    renderCart();
-    updateCartCount();
-}
-
-function removeCart(i) {
-    cart.splice(i, 1);
-    renderCart();
-    updateCartCount();
-}
-
-function goToCheckout() {
-    if(cart.length === 0) return alert("Cart is empty");
-    showCart();
-    showSection('checkout');
-    const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
-    document.getElementById('checkout-list').innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.name} x${i.qty}</span><span>${i.price * i.qty}</span></div>`).join('');
-    document.getElementById('final-price').innerText = `${total} PKR`;
-}
-
-function confirmOrder() {
-    const name = document.getElementById('c-name').value;
-    const phone = document.getElementById('c-phone').value;
-    const addr = document.getElementById('c-address').value;
-    const pay = document.querySelector('input[name="pay"]:checked').value;
-
-    if(!name || !phone || !addr) return alert("Missing Details");
-
-    const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
-    const orderId = Date.now();
-    const newOrder = { orderId, name, phone, addr, pay, items: [...cart], total, status: 'Placed' };
-    
-    orders.unshift(newOrder);
-    localStorage.setItem('ihsan_orders_db', JSON.stringify(orders));
-
-    // WhatsApp Message
-    const itemsText = cart.map(i => `• ${i.name} (${i.qty}x)`).join('%0A');
-    const msg = `*NEW ORDER - IHSAN STORE*%0A*ID:* ${orderId}%0A*Name:* ${name}%0A*Address:* ${addr}%0A*Items:*%0A${itemsText}%0A*TOTAL:* ${total} PKR`;
-    window.open(`https://wa.me/923401915677?text=${msg}`);
-
-    cart = [];
-    updateCartCount();
-    showSection('home');
-    alert("Order Successful!");
-}
-
-// ================== ADMIN DASHBOARD ==================
-function checkAdmin() {
-    if(document.getElementById('adm-pass').value === "ihsan123") {
-        document.getElementById('admin-login').classList.add('hidden');
-        document.getElementById('admin-panel').classList.remove('hidden');
-        renderInventory();
-        renderOrders();
-    } else alert("Wrong Password");
-}
-
-function switchTab(n) {
-    document.querySelectorAll('.admin-tab-active').forEach(t => {
-        t.classList.remove('admin-tab-active');
-        t.classList.add('text-gray-400');
-    });
-    document.getElementById(`t${n}`).classList.add('admin-tab-active');
-    document.getElementById(`t${n}`).classList.remove('text-gray-400');
-    
-    [0,1,2].forEach(i => document.getElementById(`pan${i}`).classList.add('hidden'));
-    document.getElementById(`pan${n}`).classList.remove('hidden');
-}
-
-function renderInventory() {
-    document.getElementById('inventory-table').innerHTML = products.map((p, i) => `
-        <tr>
-            <td class="p-4 flex items-center gap-3">
-                <img src="${p.img}" class="w-10 h-10 rounded-lg">
-                <input type="text" value="${p.name}" onchange="editProduct(${i}, 'name', this.value)" class="bg-transparent font-bold">
-            </td>
-            <td class="p-4"><input type="number" value="${p.price}" onchange="editProduct(${i}, 'price', this.value)" class="w-20 bg-transparent"></td>
-            <td class="p-4">
-                <label class="mr-2">Sale: <input type="checkbox" ${p.flash ? 'checked' : ''} onchange="editProduct(${i}, 'flash', this.checked)"></label>
-                <label>Trend: <input type="checkbox" ${p.trending ? 'checked' : ''} onchange="editProduct(${i}, 'trending', this.checked)"></label>
-            </td>
-            <td class="p-4"><button onclick="deleteP(${i})" class="text-red-500"><i class="fas fa-trash"></i></button></td>
-        </tr>
-    `).join('');
-}
-
-function editProduct(i, key, val) {
-    products[i][key] = (key === 'price') ? parseInt(val) : val;
-    localStorage.setItem('ihsan_super_db', JSON.stringify(products));
-    initHome();
-}
-
-function deleteP(i) {
-    if(confirm("Delete Product?")) {
-        products.splice(i, 1);
-        localStorage.setItem('ihsan_super_db', JSON.stringify(products));
-        renderInventory();
-    }
-}
-
-function saveProduct() {
-    const name = document.getElementById('n-name').value;
-    const price = parseInt(document.getElementById('n-price').value);
-    const cat = document.getElementById('n-cat').value;
-    const img = document.getElementById('n-img').value || "https://picsum.photos/400/400";
-    if(!name || !price) return;
-    products.push({ id: Date.now(), name, price, category: cat, img, flash: false, trending: false });
-    localStorage.setItem('ihsan_super_db', JSON.stringify(products));
-    renderInventory();
-    switchTab(0);
-}
-
-function renderOrders() {
-    document.getElementById('orders-list').innerHTML = orders.map((o, i) => `
-        <div class="p-6 bg-gray-50 rounded-2xl border flex flex-col md:flex-row justify-between gap-4">
-            <div>
-                <p class="font-black">#${o.orderId} - ${o.name}</p>
-                <p class="text-xs text-gray-400">${o.addr}</p>
-                <p class="text-sm font-bold text-green-700">${o.total} PKR - Status: ${o.status}</p>
-            </div>
-            <div class="flex flex-wrap gap-2">
-                <button onclick="sendStatusUpdate(${i}, 'Dispatched')" class="bg-blue-100 text-blue-600 px-3 py-2 rounded-xl text-xs font-bold">Dispatch</button>
-                <button onclick="sendStatusUpdate(${i}, 'Delivered')" class="bg-green-100 text-green-600 px-3 py-2 rounded-xl text-xs font-bold">Deliver</button>
             </div>
         </div>
-    `).join('');
+       
+        <button onclick="saveEditedProduct()" id="save-changes-btn" class="w-full mt-10 bg-green-700 hover:bg-green-800 text-white py-6 text-xl font-semibold rounded-3xl">Save All Changes</button>
+    </div>
+</div>
+<!-- FOOTER -->
+<footer class="bg-green-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+        <h3 id="footer-title" class="text-3xl font-bold mb-3">Ihsan Ul Haq & Sons General Store</h3>
+        <p id="footer-address">Banda Nabi Raksha Adda near Govt High School (Boys)</p>
+        <p class="mt-8 text-xl">📞 Ata Ullah: <a href="https://wa.me/923401915677" class="underline">+92 340 1915677</a></p>
+        <p id="footer-made-with" class="mt-4 text-sm opacity-75">Made with ❤️ for Ihsan Store</p>
+    </div>
+</footer>
+<script>
+// ================== TRANSLATIONS ==================
+const translations = {
+    en: {
+        logoTitle: "Ihsan Ul Haq & Sons",
+        logoSubtitle: "GENERAL STORE • BANDA NABI",
+        navHome: "Home",
+        navShop: "Shop",
+        navAdmin: "Admin",
+        heroTitle: "Fresh Quality<br>Delivered to Your Door",
+        heroSubtitle: "Banda Nabi Raksha Adda • Free Delivery on PKR 10,000+",
+        shopNow: "Shop Now →",
+        ourProducts: "Our Products",
+        resetAll: "Reset All",
+        quickFilters: "Quick Filters",
+        trending: "Trending",
+        newArrivals: "New Arrivals",
+        specialOffers: "Special Offers",
+        categories: "Categories",
+        shopByCategory: "Shop by Category",
+        allProducts: "All Products",
+        filters: "Filters",
+        yourCart: "Your Cart",
+        subtotal: "Subtotal",
+        deliveryFee: "Delivery Fee",
+        total: "Total",
+        proceedCheckout: "Proceed to Checkout",
+        checkout: "Checkout",
+        customerName: "Customer Name",
+        phoneNumber: "Phone Number",
+        whatsappRequired: "(Required for WhatsApp)",
+        deliveryArea: "Delivery Area",
+        fullAddress: "Full Address",
+        paymentMethod: "Payment Method",
+        placeOrder: "Place Order",
+        adminDashboard: "Admin Dashboard",
+        logout: "Logout",
+        totalProducts: "Total Products",
+        lowStockItems: "Low Stock Items",
+        pendingOrders: "Pending Orders",
+        productsTab: "Products",
+        ordersTab: "Orders",
+        addNewProduct: "Add New Product",
+        bulkImport: "Bulk Import CSV",
+        downloadSample: "Download Sample CSV",
+        allProductsTable: "All Products",
+        editProduct: "Edit Product",
+        saveChanges: "Save All Changes",
+        chooseImage: "📸 Choose Image",
+        or: "OR",
+        addedToCart: "added to cart 🛒",
+        orderPlaced: "Order placed successfully!\nReceipt sent on WhatsApp",
+        wrongPassword: "❌ Wrong Password!",
+        outOfStock: "❌ Sorry! This item is currently out of stock.\nWe update stock daily."
+    },
+    ur: {
+        logoTitle: "احسان الحق اینڈ سنز",
+        logoSubtitle: "جنرل سٹور • بندہ نبی",
+        navHome: "ہوم پیج",
+        navShop: "سٹور",
+        navAdmin: "ایڈمن",
+        heroTitle: "سستی اور معیاری گروسری کا واحد مرکز<br>آپ کے دروازے تک",
+        heroSubtitle: "بندہ نبی رکشہ اڈہ •10000+پر فری ڈیلیوری",
+        shopNow: "ابھی خریدیں →",
+        ourProducts: "ہمارے پروڈکٹس",
+        resetAll: "سب ری سیٹ کریں",
+        quickFilters: "فوری فلٹرز",
+        trending: "ٹرینڈنگ",
+        newArrivals: "نئی اشیاء",
+        specialOffers: "خصوصی آفرز",
+        categories: "کیٹیگریز",
+        shopByCategory: "کیٹیگری کے مطابق خریدیں",
+        allProducts: "تمام پروڈکٹس",
+        filters: "فلٹرز",
+        yourCart: "آپ کی کارٹ",
+        subtotal: "سب ٹوٹل",
+        deliveryFee: "ڈیلیوری فیس",
+        total: "کل",
+        proceedCheckout: "چیک آؤٹ جاری کریں",
+        checkout: "چیک آؤٹ",
+        customerName: "گاہک کا نام",
+        phoneNumber: "فون نمبر",
+        whatsappRequired: "(واٹس ایپ رسید کے لیے ضروری)",
+        deliveryArea: "ڈیلیوری ایریا",
+        fullAddress: "مکمل پتہ",
+        paymentMethod: "ادائیگی کا طریقہ",
+        placeOrder: "آرڈر دیں",
+        adminDashboard: "ایڈمن ڈیش بورڈ",
+        logout: "لاگ آؤٹ",
+        totalProducts: "کل پروڈکٹس",
+        lowStockItems: "کم اسٹاک",
+        pendingOrders: "زیر التواء آرڈرز",
+        productsTab: "پروڈکٹس",
+        ordersTab: "آرڈرز",
+        addNewProduct: "نیا پروڈکٹ شامل کریں",
+        bulkImport: "بلک امپورٹ CSV",
+        downloadSample: "نمونه CSV ڈاؤن لوڈ کریں",
+        allProductsTable: "تمام پروڈکٹس",
+        editProduct: "پروڈکٹ میں ترمیم",
+        saveChanges: "تمام تبدیلیاں محفوظ کریں",
+        chooseImage: "📸 تصویر منتخب کریں",
+        or: "یا",
+        addedToCart: "کارٹ میں شامل ہو گیا 🛒",
+        orderPlaced: "آرڈر کامیابی سے دیا گیا!\nواٹس ایپ پر رسید بھیج دی گئی",
+        wrongPassword: "❌ غلط پاس ورڈ!",
+        outOfStock: "❌ معذرت! یہ آئٹم فی الحال اسٹاک میں نہیں ہے۔\nہم روزانہ اسٹاک اپ ڈیٹ کرتے ہیں۔"
+    }
+};
+let currentLang = localStorage.getItem('lang') || 'en';
+// ================== GLOBAL DATA ==================
+let products = JSON.parse(localStorage.getItem('products')) || [
+    {id:1, name:"Dalda Cooking Oil 5L", price:1250, category:"Grocery", desc:"Pure cooking oil", img:"https://picsum.photos/id/201/300/300", stock:45, tags:["trending"], discount:0},
+    {id:2, name:"Fresh Bananas 1kg", price:180, category:"Fruits & Vegetables", desc:"Sweet ripe bananas", img:"https://picsum.photos/id/292/300/300", stock:120, tags:["new"], discount:0},
+    {id:3, name:"Coca Cola 1.5L", price:120, category:"Cold Drinks", desc:"Chilled drink", img:"https://picsum.photos/id/30/300/300", stock:30, tags:["offer"], discount:15},
+    {id:4, name:"Nestle Milk Pack 1L", price:220, category:"Grocery", desc:"Fresh milk", img:"https://picsum.photos/id/180/300/300", stock:80, tags:["trending"], discount:10},
+    {id:5, name:"Mangoes 1kg", price:250, category:"Fruits & Vegetables", desc:"Fresh juicy mangoes", img:"https://picsum.photos/id/292/300/300", stock:60, tags:["new"], discount:0}
+];
+let orders = JSON.parse(localStorage.getItem('orders')) || [];
+let cart = [];
+let tempImageUrl = "";
+let editIndex = -1;
+let adminLoggedIn = false;
+let currentTab = 0;
+let currentHomeFilter = null;
+let currentReceiptOrder = null;
+// ================== LANGUAGE FUNCTIONS ==================
+function setLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang', lang);
+    document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
+    translatePage();
+    renderHomeProducts(products);
+    renderHomeCategories();
 }
-
-function sendStatusUpdate(i, status) {
-    orders[i].status = status;
-    localStorage.setItem('ihsan_orders_db', JSON.stringify(orders));
-    renderOrders();
-    const o = orders[i];
-    const msg = `*IHSAN STORE UPDATE*%0AHello *${o.name}*,%0AYour order #${o.orderId} status has been updated to: *${status}*.%0AThank you!`;
-    window.open(`https://wa.me/${o.phone}?text=${msg}`);
+function translatePage() {
+    const t = translations[currentLang];
+   
+    // Navbar
+    document.getElementById('logo-title').textContent = t.logoTitle;
+    document.getElementById('logo-subtitle').textContent = t.logoSubtitle;
+    document.getElementById('nav-home').textContent = t.navHome;
+    document.getElementById('nav-shop').textContent = t.navShop;
+    document.getElementById('nav-admin').textContent = t.navAdmin;
+   
+    // Hero
+    document.getElementById('hero-title').innerHTML = t.heroTitle;
+    document.getElementById('hero-subtitle').innerHTML = t.heroSubtitle;
+    document.getElementById('shop-now-btn').innerHTML = t.shopNow;
+   
+    // Home
+    document.getElementById('our-products-title').childNodes[0].textContent = t.ourProducts + ' ';
+    document.getElementById('reset-text').textContent = t.resetAll;
+    document.getElementById('quick-filters-title').innerHTML = `<i class="fas fa-bolt text-green-700"></i> ${t.quickFilters}`;
+    document.getElementById('filter-trending').innerHTML = `🔥 ${t.trending}`;
+    document.getElementById('filter-new').innerHTML = `🆕 ${t.newArrivals}`;
+    document.getElementById('filter-offer').innerHTML = `💰 ${t.specialOffers}`;
+    document.getElementById('categories-title').innerHTML = `<i class="fas fa-tags text-green-700"></i> ${t.categories}`;
+   
+    // Shop section
+    document.getElementById('shop-by-category-title').textContent = t.shopByCategory;
+    document.getElementById('all-products-title').textContent = t.allProducts;
+    document.getElementById('filters-title').innerHTML = `<i class="fas fa-filter"></i> ${t.filters}`;
+   
+    // Cart
+    document.getElementById('your-cart-title').textContent = t.yourCart;
+    document.getElementById('subtotal-label').textContent = t.subtotal;
+    document.getElementById('delivery-fee-label').textContent = t.deliveryFee;
+    document.getElementById('total-label').textContent = t.total;
+    document.getElementById('proceed-checkout-btn').textContent = t.proceedCheckout;
+   
+    // Checkout
+    document.getElementById('checkout-title').textContent = t.checkout;
+    document.getElementById('customer-name-label').textContent = t.customerName;
+    document.getElementById('phone-label').innerHTML = `${t.phoneNumber} <span class="text-red-500">${t.whatsappRequired}</span>`;
+    document.getElementById('delivery-area-label').textContent = t.deliveryArea;
+    document.getElementById('full-address-label').textContent = t.fullAddress;
+    document.getElementById('payment-method-label').textContent = t.paymentMethod;
+    document.getElementById('place-order-btn').innerHTML = `${t.placeOrder} • <span id="final-total">0 PKR</span>`;
+   
+    // Admin
+    document.getElementById('admin-dashboard-title').textContent = t.adminDashboard;
+    document.getElementById('logout-btn').textContent = t.logout;
+    document.getElementById('total-products-label').textContent = t.totalProducts;
+    document.getElementById('low-stock-label').textContent = t.lowStockItems;
+    document.getElementById('pending-orders-label').textContent = t.pendingOrders;
+    document.getElementById('tab-products-btn').textContent = t.productsTab;
+    document.getElementById('tab-orders-btn').childNodes[0].textContent = t.ordersTab + ' ';
+    document.getElementById('add-new-product-title').textContent = t.addNewProduct;
+    document.getElementById('choose-image-btn').innerHTML = t.chooseImage;
+    document.getElementById('or-text').textContent = t.or;
+    document.getElementById('add-product-btn').textContent = t.addNewProduct;
+    document.getElementById('bulk-import-title').textContent = t.bulkImport;
+    document.getElementById('download-sample-btn').innerHTML = `<i class="fas fa-download"></i> ${t.downloadSample}`;
+    document.getElementById('all-products-table-title').textContent = t.allProductsTable;
+   
+    // Edit modal
+    document.getElementById('edit-product-title').textContent = t.editProduct;
+    document.getElementById('save-changes-btn').textContent = t.saveChanges;
+   
+    // Footer
+    document.getElementById('footer-title').textContent = t.logoTitle;
+    document.getElementById('footer-made-with').textContent = t.footerMadeWith || "Made with ❤️ for Ihsan Store";
+   
+    // Update active language button
+    document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
+    document.getElementById('lang-ur').classList.toggle('active', currentLang === 'ur');
 }
+// ================== HELPER & RENDER FUNCTIONS ==================
+function getSmallCard(p) {
+    const discPrice = p.discount > 0 ? Math.round(p.price * (1 - p.discount/100)) : p.price;
+    return `
+    <div class="product-card bg-white rounded-3xl overflow-hidden shadow cursor-pointer" onclick="quickView(${p.id})">
+        <img src="${p.img}" class="w-full h-48 object-cover">
+        <div class="p-5">
+            <div class="flex justify-between items-start">
+                <h4 class="font-semibold text-lg leading-tight">${p.name}</h4>
+                ${p.discount > 0 ? `<span class="bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full font-medium">-${p.discount}%</span>` : ''}
+            </div>
+            <p class="text-sm text-gray-500 line-clamp-2 mt-1">${p.desc}</p>
+            <div class="flex justify-between items-end mt-6">
+                ${p.discount > 0 ? `<span class="text-sm line-through text-gray-400">${p.price} PKR</span>` : ''}
+                <span class="text-2xl font-bold text-green-700">${discPrice} PKR</span>
+                <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">${p.stock} left</span>
+            </div>
+        </div>
+    </div>`;
+}
+function renderHomeProducts(filtered) {
+    const container = document.getElementById('home-product-grid');
+    let html = '';
+    filtered.forEach(p => {
+        const outOfStock = p.stock <= 0;
+        const discPrice = p.discount > 0 ? Math.round(p.price * (1 - p.discount/100)) : p.price;
+        html += `
+        <div class="product-card bg-white rounded-3xl overflow-hidden shadow">
+            <img src="${p.img}" class="w-full h-56 object-cover">
+            <div class="p-6">
+                <div class="flex justify-between">
+                    <h4 class="font-semibold text-xl">${p.name}</h4>
+                    ${p.discount > 0 ? `<span class="bg-red-100 text-red-600 text-xs px-4 py-1 rounded-3xl font-medium">-${p.discount}% OFF</span>` : ''}
+                </div>
+                <p class="text-gray-500 mt-1">${p.desc}</p>
+                <div class="mt-8 flex justify-between items-end">
+                    ${p.discount > 0 ? `<span class="line-through text-gray-400">${p.price} PKR</span>` : ''}
+                    <span class="text-3xl font-bold text-green-700">${discPrice} PKR</span>
+                    ${outOfStock ? `<span class="bg-red-100 text-red-600 px-4 py-1 rounded-3xl text-sm">Out of Stock</span>` : `<span class="text-green-600">${p.stock} left</span>`}
+                </div>
+                ${outOfStock ?
+                    `<button onclick="outOfStockAlert();event.stopImmediatePropagation()" class="mt-6 w-full bg-red-100 text-red-600 py-4 rounded-3xl text-lg">Out of Stock</button>` :
+                    `<button onclick="addToCart(${p.id});event.stopImmediatePropagation()" class="mt-6 w-full bg-green-700 hover:bg-green-800 text-white py-4 rounded-3xl text-lg">Add to Cart</button>`}
+            </div>
+        </div>`;
+    });
+    container.innerHTML = html || `<p class="col-span-full text-center py-20 text-gray-400 text-2xl">${currentLang === 'ur' ? 'کوئی پروڈکٹ نہیں ملا' : 'No products found'}</p>`;
+}
+function renderHomeCategories() {
+    const container = document.getElementById('home-categories');
+    const allCount = products.length;
+    const t = translations[currentLang];
+   
+    let html = `
+    <div onclick="filterHomeByCategory('All')" class="px-5 py-3 hover:bg-green-50 rounded-2xl cursor-pointer flex justify-between items-center font-medium">
+        ${t.categories} <span class="text-green-700 font-semibold">(${allCount})</span>
+    </div>`;
+   
+    const cats = [...new Set(products.map(p => p.category))];
+    cats.forEach(cat => {
+        const count = products.filter(p => p.category === cat).length;
+        html += `
+        <div onclick="filterHomeByCategory('${cat}')" class="px-5 py-3 hover:bg-green-50 rounded-2xl cursor-pointer flex justify-between items-center font-medium">
+            ${cat} <span class="text-green-700 font-semibold">(${count})</span>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+function filterHomeByTag(tag) {
+    currentHomeFilter = tag;
+    const filtered = products.filter(p => p.tags.includes(tag));
+    renderHomeProducts(filtered);
+}
+function filterHomeByCategory(cat) {
+    currentHomeFilter = cat;
+    const filtered = cat === 'All' ? products : products.filter(p => p.category === cat);
+    renderHomeProducts(filtered);
+}
+function resetHomeFilter() {
+    currentHomeFilter = null;
+    renderHomeProducts(products);
+}
+function renderCategories() {
+    const cats = ["All","Grocery","Fruits & Vegetables","Cold Drinks","Ice Creams","Biscuits & Snacks","Baby Care","Household"];
+    let html = '';
+    cats.forEach(cat => {
+        html += `<div onclick="filterByCategory('${cat}')" class="bg-white hover:bg-green-50 border border-gray-200 p-6 text-center rounded-3xl shadow-sm hover:shadow transition text-lg font-medium cursor-pointer">${cat}</div>`;
+    });
+    document.getElementById('category-list').innerHTML = html;
+   
+    let sideHtml = '';
+    cats.forEach(cat => {
+        sideHtml += `<div onclick="filterByCategory('${cat}');showSection('shop')" class="px-5 py-3 hover:bg-green-50 rounded-2xl cursor-pointer text-lg">${cat}</div>`;
+    });
+    document.getElementById('sidebar-categories').innerHTML = sideHtml;
+}
+function renderProducts(filtered) {
+    let html = '';
+    filtered.forEach(p => {
+        const outOfStock = p.stock <= 0;
+        const discPrice = p.discount > 0 ? Math.round(p.price * (1 - p.discount/100)) : p.price;
+        html += `
+        <div class="product-card bg-white rounded-3xl overflow-hidden shadow">
+            <img src="${p.img}" class="w-full h-56 object-cover">
+            <div class="p-6">
+                <div class="flex justify-between">
+                    <h4 class="font-semibold text-xl">${p.name}</h4>
+                    ${p.discount > 0 ? `<span class="bg-red-100 text-red-600 text-xs px-4 py-1 rounded-3xl font-medium">-${p.discount}% OFF</span>` : ''}
+                </div>
+                <p class="text-gray-500 mt-1">${p.desc}</p>
+                <div class="mt-8 flex justify-between items-end">
+                    ${p.discount > 0 ? `<span class="line-through text-gray-400">${p.price} PKR</span>` : ''}
+                    <span class="text-3xl font-bold text-green-700">${discPrice} PKR</span>
+                    ${outOfStock ? `<span class="bg-red-100 text-red-600 px-4 py-1 rounded-3xl text-sm">Out of Stock</span>` : `<span class="text-green-600">${p.stock} left</span>`}
+                </div>
+                ${outOfStock ?
+                    `<button onclick="outOfStockAlert()" class="mt-6 w-full bg-red-100 text-red-600 py-4 rounded-3xl text-lg">Out of Stock</button>` :
+                    `<button onclick="addToCart(${p.id});event.stopImmediatePropagation()" class="mt-6 w-full bg-green-700 hover:bg-green-800 text-white py-4 rounded-3xl text-lg">Add to Cart</button>`}
+            </div>
+        </div>`;
+    });
+    document.getElementById('product-grid').innerHTML = html || `<p class="col-span-full text-center py-20 text-gray-400 text-2xl">${currentLang === 'ur' ? 'کوئی پروڈکٹ نہیں ملا' : 'No products found'}</p>`;
+}
+function renderAdminProducts() {
+    const tbody = document.getElementById('admin-product-table');
+    let html = '';
+    products.forEach((p, i) => {
+        const disc = p.discount > 0 ? `-${p.discount}%` : '—';
+        html += `
+        <tr class="table-row border-b">
+            <td class="p-4"><img src="${p.img}" class="w-12 h-12 object-cover rounded-2xl"></td>
+            <td class="p-4 font-medium">${p.name}</td>
+            <td class="p-4 font-semibold">${p.price} PKR</td>
+            <td class="p-4"><span class="px-3 py-1 bg-green-100 text-green-700 rounded-2xl text-sm">${p.stock}</span></td>
+            <td class="p-4">${p.category}</td>
+            <td class="p-4 text-red-600 font-medium">${disc}</td>
+            <td class="p-4 text-center">
+                <button onclick="editProduct(${i}); event.stopImmediatePropagation()" class="bg-green-700 text-white px-6 py-2 rounded-3xl text-sm mr-2">Edit</button>
+                <button onclick="deleteProduct(${i}); event.stopImmediatePropagation()" class="text-red-600 text-2xl">🗑</button>
+            </td>
+        </tr>`;
+    });
+    tbody.innerHTML = html || `<tr><td colspan="7" class="text-center py-12 text-gray-400">${currentLang === 'ur' ? 'ابھی کوئی پروڈکٹ نہیں' : 'No products added yet'}</td></tr>`;
+   
+    const lowStock = products.filter(p => p.stock < 20).length;
+    document.getElementById('stat-total-products').textContent = products.length;
+    document.getElementById('stat-low-stock').textContent = lowStock;
+}
+// ================== SEARCH, CART, CHECKOUT, ADMIN ==================
+function liveSearch() {
+    const term = document.getElementById('search').value.toLowerCase().trim();
+    const box = document.getElementById('search-suggestions');
+    if (!term) { box.classList.add('hidden'); return; }
+   
+    const filtered = products.filter(p => p.name.toLowerCase().includes(term));
+    let html = '';
+    filtered.forEach(p => {
+        html += `<div onclick="selectSuggestion(${p.id})" class="px-6 py-5 hover:bg-gray-100 cursor-pointer flex gap-4 items-center">
+                    <img src="${p.img}" class="w-12 h-12 rounded-2xl object-cover">
+                    <div class="flex-1"><p class="font-medium">${p.name}</p><p class="text-green-700">${p.price} PKR</p></div>
+                 </div>`;
+    });
+    box.innerHTML = html || `<p class="px-8 py-8 text-gray-400 text-center">${currentLang === 'ur' ? 'کوئی میچنگ پروڈکٹ نہیں' : 'No matching products'}</p>`;
+    box.classList.remove('hidden');
+}
+function selectSuggestion(id) {
+    document.getElementById('search').value = '';
+    document.getElementById('search-suggestions').classList.add('hidden');
+    showSection('shop');
+    const prod = products.find(p => p.id === id);
+    renderProducts(prod ? [prod] : []);
+}
+function filterByCategory(cat) {
+    const filtered = cat === "All" ? products : products.filter(p => p.category === cat);
+    showSection('shop');
+    renderProducts(filtered);
+}
+function addToCart(id) {
+    const prod = products.find(p => p.id === id);
+    if (!prod || prod.stock <= 0) return outOfStockAlert();
+   
+    const exist = cart.find(item => item.id === id);
+    if (exist) {
+        if (exist.qty + 1 > prod.stock) return alert(currentLang === 'ur' ? 'اسٹاک کافی نہیں!' : 'Not enough stock!');
+        exist.qty++;
+    } else {
+        cart.push({...prod, qty: 1});
+    }
+    updateCartCount();
+    alert(`${prod.name} ${translations[currentLang].addedToCart}`);
+}
+function showCart() {
+    let html = '', subtotal = 0;
+    cart.forEach((item, i) => {
+        const tot = item.price * item.qty;
+        subtotal += tot;
+        html += `
+        <div class="flex gap-6 border-b pb-8">
+            <img src="${item.img}" class="w-24 h-24 object-cover rounded-2xl">
+            <div class="flex-1">
+                <p class="font-semibold text-xl">${item.name}</p>
+                <p class="text-green-700">${item.price} × ${item.qty} = ${tot} PKR</p>
+                <div class="flex gap-4 mt-4">
+                    <button onclick="changeQty(${i}, -1)" class="border px-5 py-2 rounded-2xl text-xl">-</button>
+                    <span class="text-2xl px-4">${item.qty}</span>
+                    <button onclick="changeQty(${i}, 1)" class="border px-5 py-2 rounded-2xl text-xl">+</button>
+                </div>
+            </div>
+            <button onclick="removeFromCart(${i})" class="text-red-500 text-4xl mt-2">×</button>
+        </div>`;
+    });
+   
+    document.getElementById('cart-items').innerHTML = html || `<p class="py-20 text-center text-gray-400 text-2xl">${currentLang === 'ur' ? 'آپ کی کارٹ خالی ہے' : 'Your cart is empty'}</p>`;
+    document.getElementById('subtotal').textContent = `${subtotal} PKR`;
+    document.getElementById('total').textContent = `${subtotal} PKR`;
+    document.getElementById('cart-modal').classList.remove('hidden');
+}
+function changeQty(i, change) {
+    const item = cart[i];
+    const prod = products.find(p => p.id === item.id);
+    const newQty = item.qty + change;
+    if (newQty > prod.stock) return alert(currentLang === 'ur' ? 'اسٹاک کافی نہیں!' : 'Not enough stock!');
+    if (newQty < 1) cart.splice(i, 1);
+    else item.qty = newQty;
+    showCart();
+}
+function removeFromCart(i) { cart.splice(i, 1); showCart(); }
+function hideCart() { document.getElementById('cart-modal').classList.add('hidden'); }
+function updateCartCount() {
+    const count = cart.reduce((a, b) => a + b.qty, 0);
+    document.getElementById('cart-count').textContent = count;
+}
+function checkout() {
+    if (cart.length === 0) return alert(currentLang === 'ur' ? 'کارٹ خالی ہے!' : 'Cart is empty!');
+    hideCart();
+    showSection('checkout');
+    calculateDelivery();
+}
+function calculateDelivery() {
+    const area = document.getElementById('area').value;
+    const subtotal = cart.reduce((a, b) => a + b.price * b.qty, 0);
+    const fee = (area === "Banda Nabi" && subtotal >= 5000) ? 0 : (area === "Banda Nabi" ? 150 : 250);
+    document.getElementById('delivery-fee').textContent = `${fee} PKR`;
+    document.getElementById('final-total').textContent = `${subtotal + fee} PKR`;
+}
+// ================== PLACE ORDER WITH RECEIPT ==================
+function placeOrder() {
+    const phone = document.getElementById('customer-phone').value.trim();
+    if (!phone || phone.length < 10) return alert(currentLang === 'ur' ? 'فون نمبر درکار ہے!' : 'Phone number is required for WhatsApp receipt!');
+   
+    const customerName = document.getElementById('customer-name').value.trim() || (currentLang === 'ur' ? "گاہک" : "Customer");
+    const area = document.getElementById('area').value;
+    const address = document.getElementById('address').value.trim();
+    const subtotal = cart.reduce((a,b)=>a + b.price*b.qty, 0);
+    const delivery = (area === "Banda Nabi" && subtotal >= 5000) ? 0 : (area === "Banda Nabi" ? 150 : 250);
+    const total = subtotal + delivery;
+    const orderId = "ORD-" + Date.now().toString().slice(-6);
 
-function logoutAdmin() {
-    document.getElementById('admin-login').classList.remove('hidden');
-    document.getElementById('admin-panel').classList.add('hidden');
+    cart.forEach(item => {
+        const prod = products.find(p => p.id === item.id);
+        if (prod) prod.stock -= item.qty;
+    });
+
+    currentReceiptOrder = {
+        id: orderId,
+        date: new Date().toLocaleString('en-PK'),
+        name: customerName,
+        phone: phone,
+        address: address || "No address provided",
+        items: [...cart],
+        total: total
+    };
+
+    orders.unshift(currentReceiptOrder);
+    localStorage.setItem('products', JSON.stringify(products));
+    localStorage.setItem('orders', JSON.stringify(orders));
+
+    showReceipt(currentReceiptOrder);
+    
+    cart = [];
+    updateCartCount();
+    updateNotificationBadge();
+    renderHomeProducts(products);
     showSection('home');
 }
+
+function showReceipt(order) {
+    document.getElementById('receipt-modal').classList.remove('hidden');
+    
+    document.getElementById('receipt-date').textContent = order.date;
+    document.getElementById('receipt-name').textContent = order.name;
+    document.getElementById('receipt-phone').textContent = order.phone;
+
+    let itemsHTML = '';
+    order.items.forEach(item => {
+        const amt = item.price * item.qty;
+        itemsHTML += `<tr><td class="py-1 pr-2">${item.name}</td><td class="text-center py-1">${item.qty}</td><td class="text-right py-1">${amt} PKR</td></tr>`;
+    });
+    document.getElementById('receipt-items').innerHTML = itemsHTML;
+    document.getElementById('receipt-subtotal').textContent = order.total + " PKR";
+    document.getElementById('receipt-total').innerHTML = `<strong>${order.total} PKR</strong>`;
+}
+
+function hideReceipt() {
+    document.getElementById('receipt-modal').classList.add('hidden');
+}
+
+function sendWhatsAppFromReceipt() {
+    if (!currentReceiptOrder) return;
+    const t = currentLang === 'ur' ? 'روپیے' : 'PKR';
+    let itemsText = currentReceiptOrder.items.map(i => `• ${i.name} ×${i.qty} = ${i.price*i.qty} ${t}`).join('%0A');
+    const msg = `🛒 *IHSAN STORE OFFICIAL BILL*%0A%0AOrder ID: ${currentReceiptOrder.id}%0ADate: ${currentReceiptOrder.date}%0ACustomer: ${currentReceiptOrder.name}%0APhone: ${currentReceiptOrder.phone}%0A%0AItems:%0A${itemsText}%0A%0ATOTAL: *${currentReceiptOrder.total} ${t}*%0A%0AThank you! ❤️`;
+    window.open(`https://wa.me/${currentReceiptOrder.phone}?text=${msg}`, '_blank');
+    hideReceipt();
+}
+// ================== ADMIN FUNCTIONS ==================
+function addProduct() {
+    const name = document.getElementById('p-name').value.trim();
+    const price = parseInt(document.getElementById('p-price').value);
+    const stock = parseInt(document.getElementById('p-stock').value) || 50;
+    const category = document.getElementById('p-category').value;
+    const desc = document.getElementById('p-desc').value.trim();
+    let img = tempImageUrl || document.getElementById('p-image-url').value.trim() || "https://picsum.photos/id/201/300/300";
+    if (!name || !price) return alert(currentLang === 'ur' ? 'نام اور قیمت درکار ہے!' : 'Name aur Price zaroori hai!');
+   
+    products.push({id: Date.now(), name, price, stock, category, desc: desc || "High quality product", img, tags: [], discount: 0});
+    localStorage.setItem('products', JSON.stringify(products));
+    alert(currentLang === 'ur' ? '✅ پروڈکٹ کامیابی سے شامل ہو گیا!' : '✅ Product added successfully!');
+    clearForm();
+    renderAdminProducts();
+    renderHomeProducts(products);
+    renderHomeCategories();
+}
+function clearForm() {
+    document.getElementById('p-name').value = '';
+    document.getElementById('p-price').value = '';
+    document.getElementById('p-stock').value = '50';
+    document.getElementById('p-desc').value = '';
+    document.getElementById('p-image-url').value = '';
+    document.getElementById('image-preview').classList.add('hidden');
+    tempImageUrl = "";
+}
+function previewLocalImage(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        tempImageUrl = ev.target.result;
+        document.getElementById('preview-img').src = tempImageUrl;
+        document.getElementById('image-preview').classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+}
+function editProduct(index) {
+    editIndex = index;
+    const p = products[index];
+    document.getElementById('edit-name').value = p.name;
+    document.getElementById('edit-price').value = p.price;
+    document.getElementById('edit-stock').value = p.stock;
+    document.getElementById('edit-category').value = p.category;
+    document.getElementById('edit-desc').value = p.desc || '';
+    document.getElementById('edit-preview-img').src = p.img;
+    document.getElementById('edit-preview').classList.remove('hidden');
+    document.getElementById('tag-trending').checked = p.tags.includes('trending');
+    document.getElementById('tag-new').checked = p.tags.includes('new');
+    document.getElementById('tag-offer').checked = p.tags.includes('offer');
+    document.getElementById('edit-discount').value = p.discount || 0;
+    toggleDiscountField();
+    document.getElementById('edit-modal').classList.remove('hidden');
+}
+function previewEditImage(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        document.getElementById('edit-preview-img').src = ev.target.result;
+        document.getElementById('edit-preview').classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+}
+function toggleDiscountField() {
+    const checked = document.getElementById('tag-offer').checked;
+    document.getElementById('offer-row').classList.toggle('hidden', !checked);
+}
+function saveEditedProduct() {
+    if (editIndex === -1) return;
+    const p = products[editIndex];
+    p.name = document.getElementById('edit-name').value.trim();
+    p.price = parseInt(document.getElementById('edit-price').value);
+    p.stock = parseInt(document.getElementById('edit-stock').value);
+    p.category = document.getElementById('edit-category').value;
+    p.desc = document.getElementById('edit-desc').value.trim();
+    p.tags = [];
+    if (document.getElementById('tag-trending').checked) p.tags.push('trending');
+    if (document.getElementById('tag-new').checked) p.tags.push('new');
+    if (document.getElementById('tag-offer').checked) p.tags.push('offer');
+    p.discount = parseInt(document.getElementById('edit-discount').value) || 0;
+    const newImgUrl = document.getElementById('edit-image-url').value.trim();
+    if (newImgUrl) p.img = newImgUrl;
+    localStorage.setItem('products', JSON.stringify(products));
+    closeEditModal();
+    renderAdminProducts();
+    renderHomeProducts(products);
+    renderHomeCategories();
+    alert(currentLang === 'ur' ? '✅ پروڈکٹ اپ ڈیٹ ہو گیا!' : '✅ Product updated successfully!');
+}
+function closeEditModal() {
+    editIndex = -1;
+    document.getElementById('edit-modal').classList.add('hidden');
+}
+function deleteProduct(i) {
+    if (confirm(currentLang === 'ur' ? 'کیا آپ واقعی یہ پروڈکٹ ڈیلیٹ کرنا چاہتے ہیں؟' : 'Delete this product permanently?')) {
+        products.splice(i, 1);
+        localStorage.setItem('products', JSON.stringify(products));
+        renderAdminProducts();
+        renderHomeProducts(products);
+        renderHomeCategories();
+    }
+}
+function downloadSampleCSV() {
+    const csv = `Name,Price,Category,Desc,Image,Stock\nDalda Cooking Oil 5L,1250,Grocery,Pure cooking oil,https://picsum.photos/id/201/300/300,50\nFresh Bananas 1kg,180,Fruits & Vegetables,Sweet bananas,https://picsum.photos/id/292/300/300,100`;
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'Ihsan_Store_Sample.csv';
+    a.click();
+    alert(currentLang === 'ur' ? '✅ نمونه CSV ڈاؤن لوڈ ہو گیا!' : '✅ Sample CSV downloaded!');
+}
+function importCSV(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        const lines = ev.target.result.trim().split('\n');
+        let added = 0;
+        for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(',').map(c => c.trim());
+            if (cols.length >= 5) {
+                products.push({
+                    id: Date.now() + added,
+                    name: cols[0],
+                    price: parseInt(cols[1]),
+                    category: cols[2] || "Grocery",
+                    desc: cols[3] || "",
+                    img: cols[4] || "https://picsum.photos/id/201/300/300",
+                    stock: parseInt(cols[5]) || 50,
+                    tags: [],
+                    discount: 0
+                });
+                added++;
+            }
+        }
+        localStorage.setItem('products', JSON.stringify(products));
+        alert(`${added} ${currentLang === 'ur' ? 'پروڈکٹس شامل ہو گئے!' : 'products imported!'}`);
+        renderAdminProducts();
+        renderHomeProducts(products);
+        renderHomeCategories();
+        e.target.value = '';
+    };
+    reader.readAsText(file);
+}
+function updateNotificationBadge() {
+    const pending = orders.filter(o => o.status === "Pending").length;
+    const badge = document.getElementById('orders-count-badge');
+    badge.textContent = pending;
+    badge.style.display = pending > 0 ? 'inline-block' : 'none';
+    document.getElementById('stat-pending-orders').textContent = pending;
+}
+function renderOrders() {
+    const container = document.getElementById('orders-list');
+    if (orders.length === 0) {
+        container.innerHTML = `<p class="text-center py-20 text-gray-400 text-2xl">${currentLang === 'ur' ? 'ابھی کوئی آرڈر نہیں' : 'No orders yet'}</p>`;
+        return;
+    }
+    let html = '';
+    orders.forEach((order, i) => {
+        html += `
+        <div class="border border-gray-200 rounded-3xl p-8 bg-white">
+            <div class="flex justify-between items-center">
+                <div>
+                    <span class="font-bold text-2xl">#${order.id}</span>
+                    <span class="ml-4 text-sm text-gray-500">${order.date}</span>
+                </div>
+                <select onchange="updateOrderStatus(${i}, this.value)" class="border-2 border-gray-300 rounded-2xl px-6 py-3">
+                    <option value="Pending" ${order.status==='Pending'?'selected':''}>Pending</option>
+                    <option value="Confirmed" ${order.status==='Confirmed'?'selected':''}>Confirmed</option>
+                    <option value="Delivered" ${order.status==='Delivered'?'selected':''}>Delivered</option>
+                </select>
+            </div>
+            <p class="mt-4"><strong>${currentLang === 'ur' ? 'گاہک' : 'Customer'}:</strong> ${order.customerName} • ${order.phone}</p>
+            <p><strong>${currentLang === 'ur' ? 'ایریا' : 'Area'}:</strong> ${order.area} • Total: <span class="font-bold">${order.total} PKR</span></p>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+function updateOrderStatus(i, status) {
+    orders[i].status = status;
+    localStorage.setItem('orders', JSON.stringify(orders));
+    const phone = orders[i].phone;
+    let msg = '';
+    if (status === "Confirmed") msg = currentLang === 'ur' ? `✅ آپ کا آرڈر #${orders[i].id} کنفرم ہو گیا ہے!` : `✅ Your Order #${orders[i].id} has been Confirmed!`;
+    if (status === "Delivered") msg = currentLang === 'ur' ? `🚚 آپ کا آرڈر #${orders[i].id} ڈیلیور ہو گیا ہے! شکریہ!` : `🚚 Your Order #${orders[i].id} has been Delivered! Thank you!`;
+    if (msg && phone) window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    renderOrders();
+    updateNotificationBadge();
+}
+function switchAdminTab(tab) {
+    currentTab = tab;
+    document.getElementById('admin-products-tab').classList.toggle('hidden', tab !== 0);
+    document.getElementById('admin-orders-tab').classList.toggle('hidden', tab !== 1);
+    if (tab === 1) renderOrders();
+}
+function showSection(section) {
+    document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+   
+    if (section === 'admin') {
+        if (!adminLoggedIn) {
+            const pass = prompt(currentLang === 'ur' ? 'ایڈمن پاس ورڈ درج کریں:' : 'Enter Admin Password:');
+            if (pass === "ihsan123") {
+                adminLoggedIn = true;
+                document.getElementById('admin').classList.remove('hidden');
+                updateNotificationBadge();
+                switchAdminTab(0);
+                renderAdminProducts();
+            } else {
+                alert(translations[currentLang].wrongPassword);
+                return;
+            }
+        } else {
+            document.getElementById('admin').classList.remove('hidden');
+            updateNotificationBadge();
+            switchAdminTab(currentTab);
+            if (currentTab === 0) renderAdminProducts();
+        }
+    } else if (section === 'shop') {
+        document.getElementById('shop').classList.remove('hidden');
+        renderProducts(products);
+    } else {
+        document.getElementById(section).classList.remove('hidden');
+        if (section === 'home') {
+            renderHomeProducts(products);
+            renderHomeCategories();
+        }
+    }
+}
+function logoutAdmin() {
+    adminLoggedIn = false;
+    showSection('home');
+}
+function quickView(id) {
+    showSection('shop');
+    const prod = products.find(p => p.id === id);
+    if (prod) renderProducts([prod]);
+}
+function outOfStockAlert() {
+    alert(translations[currentLang].outOfStock);
+}
+// ================== INIT ==================
+window.onload = () => {
+    renderCategories();
+    renderProducts(products);
+    renderHomeProducts(products);
+    renderHomeCategories();
+    updateCartCount();
+    translatePage();
+    console.log("%c✅ Ihsan Store Full Website with English/Urdu Toggle & Professional Receipt Ready!", "color:#166534; font-size:18px; font-weight:bold");
+};
 </script>
 </body>
 </html>
