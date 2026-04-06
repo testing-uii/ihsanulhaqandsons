@@ -11,143 +11,175 @@
   </style>
 </head>
 <body class="bg-[#f1f5f1]">
-  <nav class="bg-[#166534] text-white p-4 shadow-md">
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <h1 class="text-3xl font-bold">👷 Admin Portal</h1>
-      <a href="index.html" class="text-white hover:underline text-lg">← Back to Website</a>
-    </div>
-  </nav>
 
-  <div class="max-w-7xl mx-auto px-4 py-8">
-    <div class="flex border-b mb-8 overflow-x-auto">
-      <button onclick="showTab(0)" class="tab-button px-8 py-4 font-bold border-b-4 border-[#166534] text-[#166534]">Products</button>
-      <button onclick="showTab(1)" class="tab-button px-8 py-4 font-bold text-gray-600">Orders</button>
-      <button onclick="showTab(2)" class="tab-button px-8 py-4 font-bold text-gray-600">Create Banner</button>
-      <button onclick="showTab(3)" class="tab-button px-8 py-4 font-bold text-gray-600">Active Banners</button>
-    </div>
-
-    <!-- PRODUCTS SECTION -->
-    <div id="section-0">
-      <h2 class="text-3xl font-bold text-[#166534] mb-6">Products Management</h2>
-      <div id="stock-alerts" class="bg-yellow-100 border border-yellow-400 p-4 rounded-3xl mb-8 text-sm"></div>
-
-      <!-- Bulk Upload -->
-      <div class="bg-white p-6 rounded-3xl shadow mb-10">
-        <h3 class="font-bold mb-4 text-xl">Bulk Products Upload</h3>
-        <div class="flex gap-4">
-          <button onclick="downloadSampleCSV()" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-medium">📥 Download Sample CSV</button>
-          <label class="bg-green-600 text-white px-6 py-3 rounded-2xl font-medium cursor-pointer">
-            📤 Upload CSV
-            <input type="file" id="csv-upload" accept=".csv" class="hidden" onchange="handleCSVUpload(event)">
-          </label>
-        </div>
+  <!-- ====================== PASSWORD SCREEN ====================== -->
+  <div id="password-screen" class="fixed inset-0 bg-[#166534] flex items-center justify-center z-[100]">
+    <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md text-center">
+      <div class="flex justify-center mb-6">
+        <span class="text-6xl">🔒</span>
       </div>
-
-      <!-- Add Single Product -->
-      <div class="bg-white p-6 rounded-3xl shadow mb-10">
-        <h3 class="font-bold mb-4 text-xl">Add Single Product</h3>
-        <div class="grid md:grid-cols-2 gap-4">
-          <input id="add-name" placeholder="Product Name" class="border p-4 rounded-2xl">
-          <select id="add-category" class="border p-4 rounded-2xl"></select>
-          <input id="add-price" type="number" placeholder="Price (Rs.)" class="border p-4 rounded-2xl">
-          <input id="add-stock" type="number" placeholder="Stock Quantity" class="border p-4 rounded-2xl">
-          <input id="add-discount" type="number" placeholder="Discount %" value="0" class="border p-4 rounded-2xl">
-          <input id="add-image-url" placeholder="Image URL (optional)" class="border p-4 rounded-2xl md:col-span-2">
-          <input id="add-image-file" type="file" accept="image/*" class="border p-4 rounded-2xl md:col-span-2">
-          <button onclick="addNewProduct()" class="bg-[#166534] text-white py-4 rounded-2xl md:col-span-2 font-bold">Add Product</button>
-        </div>
-      </div>
-
-      <table class="w-full bg-white rounded-3xl shadow overflow-hidden" id="product-table"></table>
-    </div>
-
-    <!-- ORDERS SECTION -->
-    <div id="section-1" class="hidden">
-      <h2 class="text-3xl font-bold text-[#166534] mb-6">All Orders</h2>
-      <div id="orders-list" class="space-y-6"></div>
-    </div>
-
-    <!-- CREATE BANNER SECTION -->
-    <div id="section-2" class="hidden">
-      <h2 class="text-3xl font-bold text-[#166534] mb-6">Create New Banner / Offer</h2>
-      <div class="bg-white p-8 rounded-3xl shadow">
-        <div class="grid md:grid-cols-2 gap-6">
-          <div>
-            <label class="block font-medium mb-2">Banner Title</label>
-            <input id="banner-title" class="w-full border p-4 rounded-2xl" placeholder="e.g. Ramadan Special Package">
-          </div>
-          <div>
-            <label class="block font-medium mb-2">Discount (%)</label>
-            <input id="banner-discount" type="number" class="w-full border p-4 rounded-2xl" placeholder="20">
-          </div>
-          <div class="md:col-span-2">
-            <label class="block font-medium mb-2">Description</label>
-            <textarea id="banner-desc" rows="3" class="w-full border p-4 rounded-2xl" placeholder="Special discount on all grocery items..."></textarea>
-          </div>
-          <div class="md:col-span-2">
-            <label class="block font-medium mb-2">Banner Image</label>
-            <input id="banner-image-url" class="w-full border p-4 rounded-2xl mb-3" placeholder="Image URL">
-            <input id="banner-image-file" type="file" accept="image/*" class="w-full border p-4 rounded-2xl">
-          </div>
-        </div>
-
-        <div class="mt-10">
-          <label class="block font-medium mb-4">Select Products for this Banner</label>
-          <div id="product-checkbox-list" class="max-h-96 overflow-y-auto border rounded-3xl p-6 grid grid-cols-2 gap-4"></div>
-        </div>
-
-        <button onclick="createBanner()" class="mt-10 w-full bg-[#166534] text-white py-5 rounded-3xl text-xl font-bold">Create Banner</button>
-      </div>
-    </div>
-
-    <!-- ACTIVE BANNERS SECTION -->
-    <div id="section-3" class="hidden">
-      <h2 class="text-3xl font-bold text-[#166534] mb-6">Active Banners</h2>
-      <div id="active-banners" class="grid md:grid-cols-2 gap-8"></div>
+      <h2 class="text-3xl font-bold text-[#166534] mb-2">Admin Login</h2>
+      <p class="text-gray-600 mb-8">Enter your admin password to continue</p>
+      
+      <input id="admin-password" type="password" placeholder="Enter Password" 
+             class="w-full border-2 border-gray-300 focus:border-[#166534] p-5 rounded-2xl text-lg mb-6 outline-none">
+      
+      <button onclick="checkPassword()" 
+              class="w-full bg-[#166534] hover:bg-green-700 text-white py-5 rounded-2xl text-xl font-bold transition">
+        Login to Admin Portal
+      </button>
+      
+      <p id="password-error" class="text-red-600 mt-4 font-medium hidden">❌ Incorrect Password! Try again.</p>
     </div>
   </div>
 
-  <!-- Edit Product Modal -->
-  <div id="edit-product-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-    <div class="bg-white w-full max-w-lg mx-4 rounded-3xl overflow-hidden">
-      <div class="bg-[#166534] text-white p-6">
-        <h3 class="text-2xl font-bold">Edit Product</h3>
-      </div>
-      <div class="p-8 modal-body">
-        <input id="edit-name" class="w-full border p-4 rounded-2xl mb-4" placeholder="Product Name">
-        <select id="edit-category" class="w-full border p-4 rounded-2xl mb-4"></select>
-        <input id="edit-price" type="number" class="w-full border p-4 rounded-2xl mb-4" placeholder="Price">
-        <input id="edit-stock" type="number" class="w-full border p-4 rounded-2xl mb-4" placeholder="Stock">
-        <input id="edit-discount" type="number" class="w-full border p-4 rounded-2xl mb-4" placeholder="Discount %">
-        <input id="edit-image" class="w-full border p-4 rounded-2xl mb-8" placeholder="Image URL">
-      </div>
-      <div class="border-t p-6 flex gap-4">
-        <button onclick="saveProductEdit()" class="flex-1 bg-[#166534] text-white py-4 rounded-2xl font-bold">Save Changes</button>
-        <button onclick="closeProductModal()" class="flex-1 border py-4 rounded-2xl font-bold">Cancel</button>
-      </div>
-    </div>
-  </div>
+  <!-- ====================== MAIN ADMIN CONTENT ====================== -->
+  <div id="admin-content" class="hidden">
 
-  <!-- Edit Banner Modal -->
-  <div id="edit-banner-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-    <div class="bg-white w-full max-w-2xl mx-4 rounded-3xl overflow-hidden shadow-2xl">
-      <div class="bg-[#166534] text-white px-8 py-6">
-        <h3 class="text-2xl font-bold">Edit Banner / Offer</h3>
-      </div>
-      <div class="modal-body p-8 overflow-y-auto" style="max-height: 70vh;">
-        <input id="edit-banner-title" class="w-full border p-4 rounded-2xl mb-4" placeholder="Banner Title">
-        <input id="edit-banner-discount" type="number" class="w-full border p-4 rounded-2xl mb-4" placeholder="Discount %">
-        <textarea id="edit-banner-desc" rows="4" class="w-full border p-4 rounded-2xl mb-6" placeholder="Description"></textarea>
-        <input id="edit-banner-image-url" class="w-full border p-4 rounded-2xl mb-3" placeholder="Image URL">
-        <input id="edit-banner-image-file" type="file" accept="image/*" class="w-full border p-4 rounded-2xl">
-        <div class="mt-10">
-          <label class="block font-medium mb-4">Select Products</label>
-          <div id="edit-product-checkbox-list" class="max-h-80 overflow-y-auto border rounded-3xl p-6 grid grid-cols-2 gap-4"></div>
+    <nav class="bg-[#166534] text-white p-4 shadow-md">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <h1 class="text-3xl font-bold">👷 Admin Portal</h1>
+        <div class="flex items-center gap-4">
+          <button onclick="changeAdminPassword()" 
+                  class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-3 rounded-2xl font-medium transition">
+            Change Password
+          </button>
+          <a href="index.html" class="text-white hover:underline text-lg">← Back to Website</a>
         </div>
       </div>
-      <div class="border-t p-6 flex gap-4 bg-gray-50">
-        <button onclick="saveBannerEdit()" class="flex-1 bg-[#166534] text-white py-4 rounded-2xl font-bold">Save Changes</button>
-        <button onclick="closeBannerModal()" class="flex-1 border py-4 rounded-2xl font-bold">Cancel</button>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <div class="flex border-b mb-8 overflow-x-auto">
+        <button onclick="showTab(0)" class="tab-button px-8 py-4 font-bold border-b-4 border-[#166534] text-[#166534]">Products</button>
+        <button onclick="showTab(1)" class="tab-button px-8 py-4 font-bold text-gray-600">Orders</button>
+        <button onclick="showTab(2)" class="tab-button px-8 py-4 font-bold text-gray-600">Create Banner</button>
+        <button onclick="showTab(3)" class="tab-button px-8 py-4 font-bold text-gray-600">Active Banners</button>
+      </div>
+
+      <!-- PRODUCTS SECTION -->
+      <div id="section-0">
+        <h2 class="text-3xl font-bold text-[#166534] mb-6">Products Management</h2>
+        <div id="stock-alerts" class="bg-yellow-100 border border-yellow-400 p-4 rounded-3xl mb-8 text-sm"></div>
+
+        <!-- Bulk Upload -->
+        <div class="bg-white p-6 rounded-3xl shadow mb-10">
+          <h3 class="font-bold mb-4 text-xl">Bulk Products Upload</h3>
+          <div class="flex gap-4">
+            <button onclick="downloadSampleCSV()" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-medium">📥 Download Sample CSV</button>
+            <label class="bg-green-600 text-white px-6 py-3 rounded-2xl font-medium cursor-pointer">
+              📤 Upload CSV
+              <input type="file" id="csv-upload" accept=".csv" class="hidden" onchange="handleCSVUpload(event)">
+            </label>
+          </div>
+        </div>
+
+        <!-- Add Single Product -->
+        <div class="bg-white p-6 rounded-3xl shadow mb-10">
+          <h3 class="font-bold mb-4 text-xl">Add Single Product</h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <input id="add-name" placeholder="Product Name" class="border p-4 rounded-2xl">
+            <select id="add-category" class="border p-4 rounded-2xl"></select>
+            <input id="add-price" type="number" placeholder="Price (Rs.)" class="border p-4 rounded-2xl">
+            <input id="add-stock" type="number" placeholder="Stock Quantity" class="border p-4 rounded-2xl">
+            <input id="add-discount" type="number" placeholder="Discount %" value="0" class="border p-4 rounded-2xl">
+            <input id="add-image-url" placeholder="Image URL (optional)" class="border p-4 rounded-2xl md:col-span-2">
+            <input id="add-image-file" type="file" accept="image/*" class="border p-4 rounded-2xl md:col-span-2">
+            <button onclick="addNewProduct()" class="bg-[#166534] text-white py-4 rounded-2xl md:col-span-2 font-bold">Add Product</button>
+          </div>
+        </div>
+
+        <table class="w-full bg-white rounded-3xl shadow overflow-hidden" id="product-table"></table>
+      </div>
+
+      <!-- ORDERS SECTION -->
+      <div id="section-1" class="hidden">
+        <h2 class="text-3xl font-bold text-[#166534] mb-6">All Orders</h2>
+        <div id="orders-list" class="space-y-6"></div>
+      </div>
+
+      <!-- CREATE BANNER SECTION -->
+      <div id="section-2" class="hidden">
+        <h2 class="text-3xl font-bold text-[#166534] mb-6">Create New Banner / Offer</h2>
+        <div class="bg-white p-8 rounded-3xl shadow">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block font-medium mb-2">Banner Title</label>
+              <input id="banner-title" class="w-full border p-4 rounded-2xl" placeholder="e.g. Ramadan Special Package">
+            </div>
+            <div>
+              <label class="block font-medium mb-2">Discount (%)</label>
+              <input id="banner-discount" type="number" class="w-full border p-4 rounded-2xl" placeholder="20">
+            </div>
+            <div class="md:col-span-2">
+              <label class="block font-medium mb-2">Description</label>
+              <textarea id="banner-desc" rows="3" class="w-full border p-4 rounded-2xl" placeholder="Special discount on all grocery items..."></textarea>
+            </div>
+            <div class="md:col-span-2">
+              <label class="block font-medium mb-2">Banner Image</label>
+              <input id="banner-image-url" class="w-full border p-4 rounded-2xl mb-3" placeholder="Image URL">
+              <input id="banner-image-file" type="file" accept="image/*" class="w-full border p-4 rounded-2xl">
+            </div>
+          </div>
+
+          <div class="mt-10">
+            <label class="block font-medium mb-4">Select Products for this Banner</label>
+            <div id="product-checkbox-list" class="max-h-96 overflow-y-auto border rounded-3xl p-6 grid grid-cols-2 gap-4"></div>
+          </div>
+
+          <button onclick="createBanner()" class="mt-10 w-full bg-[#166534] text-white py-5 rounded-3xl text-xl font-bold">Create Banner</button>
+        </div>
+      </div>
+
+      <!-- ACTIVE BANNERS SECTION -->
+      <div id="section-3" class="hidden">
+        <h2 class="text-3xl font-bold text-[#166534] mb-6">Active Banners</h2>
+        <div id="active-banners" class="grid md:grid-cols-2 gap-8"></div>
+      </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div id="edit-product-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+      <div class="bg-white w-full max-w-lg mx-4 rounded-3xl overflow-hidden">
+        <div class="bg-[#166534] text-white p-6">
+          <h3 class="text-2xl font-bold">Edit Product</h3>
+        </div>
+        <div class="p-8 modal-body">
+          <input id="edit-name" class="w-full border p-4 rounded-2xl mb-4" placeholder="Product Name">
+          <select id="edit-category" class="w-full border p-4 rounded-2xl mb-4"></select>
+          <input id="edit-price" type="number" class="w-full border p-4 rounded-2xl mb-4" placeholder="Price">
+          <input id="edit-stock" type="number" class="w-full border p-4 rounded-2xl mb-4" placeholder="Stock">
+          <input id="edit-discount" type="number" class="w-full border p-4 rounded-2xl mb-4" placeholder="Discount %">
+          <input id="edit-image" class="w-full border p-4 rounded-2xl mb-8" placeholder="Image URL">
+        </div>
+        <div class="border-t p-6 flex gap-4">
+          <button onclick="saveProductEdit()" class="flex-1 bg-[#166534] text-white py-4 rounded-2xl font-bold">Save Changes</button>
+          <button onclick="closeProductModal()" class="flex-1 border py-4 rounded-2xl font-bold">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Banner Modal -->
+    <div id="edit-banner-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+      <div class="bg-white w-full max-w-2xl mx-4 rounded-3xl overflow-hidden shadow-2xl">
+        <div class="bg-[#166534] text-white px-8 py-6">
+          <h3 class="text-2xl font-bold">Edit Banner / Offer</h3>
+        </div>
+        <div class="modal-body p-8 overflow-y-auto" style="max-height: 70vh;">
+          <input id="edit-banner-title" class="w-full border p-4 rounded-2xl mb-4" placeholder="Banner Title">
+          <input id="edit-banner-discount" type="number" class="w-full border p-4 rounded-2xl mb-4" placeholder="Discount %">
+          <textarea id="edit-banner-desc" rows="4" class="w-full border p-4 rounded-2xl mb-6" placeholder="Description"></textarea>
+          <input id="edit-banner-image-url" class="w-full border p-4 rounded-2xl mb-3" placeholder="Image URL">
+          <input id="edit-banner-image-file" type="file" accept="image/*" class="w-full border p-4 rounded-2xl">
+          <div class="mt-10">
+            <label class="block font-medium mb-4">Select Products</label>
+            <div id="edit-product-checkbox-list" class="max-h-80 overflow-y-auto border rounded-3xl p-6 grid grid-cols-2 gap-4"></div>
+          </div>
+        </div>
+        <div class="border-t p-6 flex gap-4 bg-gray-50">
+          <button onclick="saveBannerEdit()" class="flex-1 bg-[#166534] text-white py-4 rounded-2xl font-bold">Save Changes</button>
+          <button onclick="closeBannerModal()" class="flex-1 border py-4 rounded-2xl font-bold">Cancel</button>
+        </div>
       </div>
     </div>
   </div>
@@ -158,6 +190,39 @@
     let currentEditBannerId = null;
     let banners = JSON.parse(localStorage.getItem('banners')) || [];
 
+    // ==================== PASSWORD SYSTEM ====================
+    let adminPassword = "admin123";   // ← Yahan apna password change kar sakte ho
+
+    function checkPassword() {
+      const entered = document.getElementById('admin-password').value.trim();
+      if (entered === adminPassword) {
+        document.getElementById('password-screen').classList.add('hidden');
+        document.getElementById('admin-content').classList.remove('hidden');
+        initializeAdmin();
+      } else {
+        document.getElementById('password-error').classList.remove('hidden');
+        setTimeout(() => document.getElementById('password-error').classList.add('hidden'), 3000);
+      }
+    }
+
+    function changeAdminPassword() {
+      const newPass = prompt("Enter new admin password (minimum 4 characters):");
+      if (newPass && newPass.length >= 4) {
+        adminPassword = newPass;
+        alert(`✅ Password changed successfully!\n\nNew Password: ${newPass}\n\nNext time use this password.`);
+      } else if (newPass) {
+        alert("Password must be at least 4 characters long.");
+      }
+    }
+
+    function initializeAdmin() {
+      populateCategoryDropdown('add-category');
+      renderProducts();
+      showStockAlerts();
+      renderProductCheckboxes('product-checkbox-list');
+    }
+
+    // ==================== TAB SYSTEM ====================
     function showTab(n) {
       for (let i = 0; i < 4; i++) {
         const section = document.getElementById('section-' + i);
@@ -168,6 +233,7 @@
       if (n === 3) renderActiveBanners();
     }
 
+    // ==================== ALL FUNCTIONS ====================
     function populateCategoryDropdown(selectId, selected = "") {
       const select = document.getElementById(selectId);
       select.innerHTML = categories.map(cat => 
@@ -452,7 +518,7 @@
       alert("✅ Banner Deleted!");
     }
 
-    // ==================== ORDERS SECTION (FIXED) ====================
+    // ==================== ORDERS SECTION ====================
     function renderOrders() {
       let orders = JSON.parse(localStorage.getItem('orders')) || [];
       const container = document.getElementById('orders-list');
@@ -495,7 +561,7 @@
 
       let message = '';
       if (newStatus === "Placed") {
-        message = `Dear ${order.customerName},\n\nYour order #${order.id} has been successfully placed!\nTotal: Rs. ${order.total}\n\nThank you for shopping with IHSAN UL HAQ & SONS!`;
+        message = `Dear ${order.customerName},\n\nYour order #${order.id} has been successfully placed!\nTotal: Rs. ${order.total}\nWe will confirm shortly.\nThank you for shopping with IHSAN UL HAQ & SONS!`;
       } else if (newStatus === "Dispatched") {
         message = `Dear ${order.customerName},\n\nYour order #${order.id} has been dispatched and is on the way.\nThank you!`;
       } else if (newStatus === "Delivered") {
@@ -518,11 +584,16 @@
       renderOrders();
     }
 
-    // Initialize
-    populateCategoryDropdown('add-category');
-    renderProducts();
-    showStockAlerts();
-    renderProductCheckboxes('product-checkbox-list');
+    // ==================== INITIALIZE ====================
+    window.onload = function() {
+      document.getElementById('password-screen').classList.remove('hidden');
+      document.getElementById('admin-content').classList.add('hidden');
+    };
+
+    // Enter key support for password
+    document.getElementById('admin-password').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
   </script>
 </body>
 </html>
