@@ -31,14 +31,28 @@
 
   <div class="max-w-7xl mx-auto px-4 py-12">
     <h1 class="text-4xl font-bold text-[#166534] mb-8">Your Cart</h1>
-    <div id="cart-items" class="space-y-6 min-h-[400px]"></div>
 
-    <div class="mt-12 bg-white p-8 rounded-3xl shadow">
-      <div class="flex justify-between items-center text-3xl font-bold">
-        <span>Total:</span>
-        <span id="total-price" class="text-[#166534]">Rs. 0</span>
+    <div class="grid md:grid-cols-12 gap-10">
+      <!-- Left: Cart Items -->
+      <div class="md:col-span-8" id="cart-items"></div>
+
+      <!-- Right: Order Summary (Sticky) -->
+      <div class="md:col-span-4">
+        <div class="bg-white p-8 rounded-3xl shadow sticky top-8">
+          <h2 class="text-2xl font-bold mb-6">Order Summary</h2>
+          <div id="summary-items" class="space-y-4 mb-8"></div>
+          <div class="border-t pt-6">
+            <div class="flex justify-between text-xl font-bold">
+              <span>Total</span>
+              <span>Rs. <span id="cart-total">0</span></span>
+            </div>
+          </div>
+          <a href="checkout.html" 
+             class="mt-10 block text-center bg-[#166534] text-white py-6 text-2xl rounded-3xl font-bold">
+            Proceed to Checkout
+          </a>
+        </div>
       </div>
-      <button onclick="goToCheckout()" class="mt-8 w-full bg-[#166534] text-white py-6 text-2xl rounded-3xl hover:bg-green-800">Proceed to Checkout</button>
     </div>
   </div>
 
@@ -48,69 +62,68 @@
 
     function renderCart() {
       const container = document.getElementById('cart-items');
-      let total = 0;
-
       if (cart.length === 0) {
-        container.innerHTML = `<p class="text-center text-gray-500 py-20">Your cart is empty</p>`;
-        document.getElementById('total-price').textContent = `Rs. 0`;
+        container.innerHTML = `<p class="text-center py-20 text-gray-500 text-xl">Your cart is empty</p>`;
         return;
       }
-
       container.innerHTML = cart.map((item, index) => {
         const salePrice = item.discount > 0 ? Math.round(item.price * (1 - item.discount/100)) : item.price;
-        total += salePrice * (item.qty || 1);
-
         return `
-          <div class="flex flex-col md:flex-row gap-6 bg-white p-6 rounded-3xl shadow">
-            <img src="${item.image}" class="w-full md:w-32 h-32 object-cover rounded-2xl">
+          <div class="flex gap-6 bg-white p-6 rounded-3xl shadow mb-6">
+            <img src="${item.image}" class="w-28 h-28 object-cover rounded-2xl">
             <div class="flex-1">
-              <h3 class="font-bold text-xl">${item.name}</h3>
-              <p class="text-[#166534] text-2xl">Rs. ${salePrice}</p>
-              ${item.discount > 0 ? `<p class="text-red-500">-${item.discount}% Offer Applied</p>` : ''}
-              <p class="text-sm text-gray-500">Stock Available: ${item.stock}</p>
+              <h3 class="font-bold">${item.name}</h3>
+              <p class="text-sm text-gray-500">${item.category}</p>
+              <div class="flex items-center gap-6 mt-6">
+                <div class="flex items-center border rounded-2xl">
+                  <button onclick="changeQty(${index}, -1)" class="px-5 py-3">-</button>
+                  <span class="px-6 font-medium">${item.qty || 1}</span>
+                  <button onclick="changeQty(${index}, 1)" class="px-5 py-3">+</button>
+                </div>
+                <div class="flex-1 text-right">
+                  <p class="text-2xl font-bold text-[#166534]">Rs. ${salePrice}</p>
+                </div>
+                <button onclick="removeFromCart(${index})" class="text-red-500 text-sm">Remove</button>
+              </div>
             </div>
-            <div class="flex items-center gap-4">
-              <button onclick="changeQty(${index}, -1)" class="w-10 h-10 border-2 border-gray-300 hover:border-[#166534] rounded-2xl text-xl">-</button>
-              <span class="font-bold text-xl w-8 text-center">${item.qty || 1}</span>
-              <button onclick="changeQty(${index}, 1)" class="w-10 h-10 border-2 border-gray-300 hover:border-[#166534] rounded-2xl text-xl">+</button>
-            </div>
-            <button onclick="removeFromCart(${index})" class="text-red-500 text-3xl self-start">🗑</button>
           </div>`;
       }).join('');
+    }
 
-      document.getElementById('total-price').textContent = `Rs. ${total}`;
+    function renderSummary() {
+      const container = document.getElementById('summary-items');
+      let total = 0;
+      container.innerHTML = cart.map(item => {
+        const salePrice = item.discount > 0 ? Math.round(item.price * (1 - item.discount/100)) : item.price;
+        total += salePrice * (item.qty || 1);
+        return `
+          <div class="flex justify-between">
+            <span>${item.name} × ${item.qty || 1}</span>
+            <span>Rs. ${salePrice}</span>
+          </div>`;
+      }).join('');
+      document.getElementById('cart-total').textContent = total;
     }
 
     function changeQty(index, change) {
-      let item = cart[index];
-      let newQty = (item.qty || 1) + change;
-
-      if (newQty < 1) return;
-      if (newQty > item.stock) {
-        alert(`Sorry! Only ${item.stock} items left in stock for ${item.name}.`);
-        return;
-      }
-
-      item.qty = newQty;
+      const item = cart[index];
+      item.qty = (item.qty || 1) + change;
+      if (item.qty < 1) item.qty = 1;
       localStorage.setItem('cart', JSON.stringify(cart));
       renderCart();
+      renderSummary();
     }
 
     function removeFromCart(index) {
       cart.splice(index, 1);
       localStorage.setItem('cart', JSON.stringify(cart));
       renderCart();
+      renderSummary();
     }
 
-    function goToCheckout() {
-      if (cart.length === 0) {
-        alert("Your cart is empty!");
-        return;
-      }
-      window.location.href = "checkout.html";
-    }
-
+    // Initialize
     renderCart();
+    renderSummary();
   </script>
 </body>
 </html>
