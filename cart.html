@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart - IHSAN UL HAQ & SONS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/products.js"></script>
+</head>
+<body class="bg-[#f1f5f1]">
+  <!-- Navbar -->
+  <nav class="bg-[#166534] text-white sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-4xl">🛒</span>
+        <div>
+          <h1 class="text-2xl font-bold">IHSAN UL HAQ & SONS</h1>
+          <p class="text-xs -mt-1 text-green-100">General Store • Since 1990</p>
+        </div>
+      </div>
+      <div class="hidden md:flex gap-8 text-lg">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="offers.html">Offers</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <a href="cart.html" class="relative text-3xl">🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-yellow-300 text-[#166534] text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span></a>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold text-[#166534] mb-8">Your Cart</h1>
+    <div id="cart-items" class="space-y-6 min-h-[400px]"></div>
+
+    <div class="mt-12 bg-white p-8 rounded-3xl shadow">
+      <div class="flex justify-between items-center text-3xl font-bold">
+        <span>Total:</span>
+        <span id="total-price" class="text-[#166534]">Rs. 0</span>
+      </div>
+      <button onclick="goToCheckout()" class="mt-8 w-full bg-[#166534] text-white py-6 text-2xl rounded-3xl hover:bg-green-800">Proceed to Checkout</button>
+    </div>
+  </div>
+
+  <script>
+    loadProducts();
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function renderCart() {
+      const container = document.getElementById('cart-items');
+      let total = 0;
+
+      if (cart.length === 0) {
+        container.innerHTML = `<p class="text-center text-gray-500 py-20">Your cart is empty</p>`;
+        document.getElementById('total-price').textContent = `Rs. 0`;
+        return;
+      }
+
+      container.innerHTML = cart.map((item, index) => {
+        const salePrice = item.discount > 0 ? Math.round(item.price * (1 - item.discount/100)) : item.price;
+        total += salePrice * (item.qty || 1);
+
+        return `
+          <div class="flex flex-col md:flex-row gap-6 bg-white p-6 rounded-3xl shadow">
+            <img src="${item.image}" class="w-full md:w-32 h-32 object-cover rounded-2xl">
+            <div class="flex-1">
+              <h3 class="font-bold text-xl">${item.name}</h3>
+              <p class="text-[#166534] text-2xl">Rs. ${salePrice}</p>
+              ${item.discount > 0 ? `<p class="text-red-500">-${item.discount}% Offer Applied</p>` : ''}
+              <p class="text-sm text-gray-500">Stock Available: ${item.stock}</p>
+            </div>
+            <div class="flex items-center gap-4">
+              <button onclick="changeQty(${index}, -1)" class="w-10 h-10 border-2 border-gray-300 hover:border-[#166534] rounded-2xl text-xl">-</button>
+              <span class="font-bold text-xl w-8 text-center">${item.qty || 1}</span>
+              <button onclick="changeQty(${index}, 1)" class="w-10 h-10 border-2 border-gray-300 hover:border-[#166534] rounded-2xl text-xl">+</button>
+            </div>
+            <button onclick="removeFromCart(${index})" class="text-red-500 text-3xl self-start">🗑</button>
+          </div>`;
+      }).join('');
+
+      document.getElementById('total-price').textContent = `Rs. ${total}`;
+    }
+
+    function changeQty(index, change) {
+      let item = cart[index];
+      let newQty = (item.qty || 1) + change;
+
+      if (newQty < 1) return;
+      if (newQty > item.stock) {
+        alert(`Sorry! Only ${item.stock} items left in stock for ${item.name}.`);
+        return;
+      }
+
+      item.qty = newQty;
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    function goToCheckout() {
+      if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+      window.location.href = "checkout.html";
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>

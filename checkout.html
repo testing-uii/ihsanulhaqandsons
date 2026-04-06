@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - IHSAN UL HAQ & SONS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/products.js"></script>
+</head>
+<body class="bg-[#f1f5f1]">
+  <!-- Navbar -->
+  <nav class="bg-[#166534] text-white sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-4xl">🛒</span>
+        <div>
+          <h1 class="text-2xl font-bold">IHSAN UL HAQ & SONS</h1>
+          <p class="text-xs -mt-1 text-green-100">General Store • Since 1990</p>
+        </div>
+      </div>
+      <div class="hidden md:flex gap-8 text-lg">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="offers.html">Offers</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold text-[#166534] mb-10">Checkout</h1>
+    <div class="grid md:grid-cols-2 gap-10">
+      <!-- Delivery Information -->
+      <div class="bg-white p-8 rounded-3xl shadow">
+        <h2 class="text-2xl font-bold mb-6">Delivery Information</h2>
+        <input id="customer-name" type="text" placeholder="Full Name *" class="w-full border p-4 rounded-2xl mb-4">
+        <input id="customer-phone" type="tel" placeholder="Mobile Number (WhatsApp) *" class="w-full border p-4 rounded-2xl mb-4">
+        <textarea id="customer-address" placeholder="Full Delivery Address *" class="w-full border p-4 rounded-2xl h-32"></textarea>
+        <p class="text-xs text-green-700 mt-3">⚠️ Address is compulsory. Your WhatsApp number must be active for order confirmation.</p>
+      </div>
+
+      <!-- Payment -->
+      <div class="bg-white p-8 rounded-3xl shadow">
+        <h2 class="text-2xl font-bold mb-6">Payment Method</h2>
+        <div class="space-y-4">
+          <label class="flex items-center gap-3 p-4 border rounded-2xl cursor-pointer"><input type="radio" name="pay" checked> Cash on Delivery (COD)</label>
+          <label class="flex items-center gap-3 p-4 border rounded-2xl cursor-pointer"><input type="radio" name="pay"> EasyPaisa</label>
+          <label class="flex items-center gap-3 p-4 border rounded-2xl cursor-pointer"><input type="radio" name="pay"> JazzCash</label>
+        </div>
+        <button onclick="placeOrder()" class="mt-10 w-full bg-[#166534] text-white py-6 text-2xl rounded-3xl">Place Order • Rs. <span id="final-total">0</span></button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    loadProducts();
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function showTotal() {
+      let total = 0;
+      cart.forEach(item => {
+        const salePrice = item.discount > 0 ? Math.round(item.price * (1 - item.discount/100)) : item.price;
+        total += salePrice * (item.qty || 1);
+      });
+      document.getElementById('final-total').textContent = total;
+    }
+
+    function placeOrder() {
+      const name = document.getElementById('customer-name').value.trim();
+      const phone = document.getElementById('customer-phone').value.trim();
+      const address = document.getElementById('customer-address').value.trim();
+
+      if (!name || !phone || !address) {
+        alert("❌ Full Name, Mobile Number and Delivery Address are compulsory!");
+        return;
+      }
+
+      if (cart.length === 0) return alert("Cart is empty!");
+
+      // Deduct stock in real-time
+      cart.forEach(cartItem => {
+        const product = products.find(p => p.id === cartItem.id);
+        if (product) product.stock = Math.max(0, product.stock - (cartItem.qty || 1));
+      });
+      saveProducts();
+
+      const orderId = "IH" + Math.floor(10000 + Math.random() * 90000);
+      const total = parseFloat(document.getElementById('final-total').textContent);
+
+      const order = {
+        id: orderId,
+        date: new Date().toLocaleString('en-PK'),
+        customerName: name,
+        customerPhone: phone,
+        customerAddress: address,
+        items: [...cart],
+        total: total,
+        status: "Pending"
+      };
+
+      let orders = JSON.parse(localStorage.getItem('orders')) || [];
+      orders.unshift(order);
+      localStorage.setItem('orders', JSON.stringify(orders));
+
+      // Professional message
+      alert(`✅ Your order has been received successfully!\n\nOrder ID: #${orderId}\nWe will confirm your order shortly through WhatsApp.\nThank you for shopping with IHSAN UL HAQ & SONS`);
+
+      // Open WhatsApp automatically
+      const message = `Dear ${name},\n\nYour order #${orderId} has been successfully received!\nTotal Amount: Rs. ${total}\n\nWe will confirm it shortly.\nThank you for shopping with IHSAN UL HAQ & SONS General Store.`;
+      const waLink = `https://wa.me/92${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+      window.open(waLink, '_blank');
+
+      localStorage.removeItem('cart');
+      window.location.href = "index.html";
+    }
+
+    showTotal();
+  </script>
+</body>
+</html>
