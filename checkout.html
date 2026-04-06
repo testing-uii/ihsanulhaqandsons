@@ -28,27 +28,71 @@
     </div>
   </nav>
 
-  <div class="max-w-4xl mx-auto px-4 py-12">
+  <div class="max-w-7xl mx-auto px-4 py-12">
     <h1 class="text-4xl font-bold text-[#166534] mb-10">Checkout</h1>
-    <div class="grid md:grid-cols-2 gap-10">
-      <!-- Delivery Information -->
-      <div class="bg-white p-8 rounded-3xl shadow">
-        <h2 class="text-2xl font-bold mb-6">Delivery Information</h2>
-        <input id="customer-name" type="text" placeholder="Full Name *" class="w-full border p-4 rounded-2xl mb-4">
-        <input id="customer-phone" type="tel" placeholder="Mobile Number (WhatsApp) *" class="w-full border p-4 rounded-2xl mb-4">
-        <textarea id="customer-address" placeholder="Full Delivery Address *" class="w-full border p-4 rounded-2xl h-32"></textarea>
-        <p class="text-xs text-green-700 mt-3">⚠️ Address is compulsory. Your WhatsApp number must be active for order confirmation.</p>
+    
+    <div class="grid md:grid-cols-12 gap-10">
+      <!-- Left Side: Delivery + Payment -->
+      <div class="md:col-span-7">
+        <!-- Delivery Information -->
+        <div class="bg-white p-8 rounded-3xl shadow mb-8">
+          <h2 class="text-2xl font-bold mb-6">Delivery Information</h2>
+          <input id="customer-name" type="text" placeholder="Full Name *" class="w-full border p-4 rounded-2xl mb-4">
+          <input id="customer-phone" type="tel" placeholder="Mobile Number (WhatsApp) *" class="w-full border p-4 rounded-2xl mb-4">
+          <textarea id="customer-address" placeholder="Full Delivery Address *" class="w-full border p-4 rounded-2xl h-32"></textarea>
+          <p class="text-xs text-green-700 mt-3">⚠️ Address is compulsory. Your WhatsApp number must be active for order confirmation.</p>
+        </div>
+
+        <!-- Payment -->
+        <div class="bg-white p-8 rounded-3xl shadow">
+          <h2 class="text-2xl font-bold mb-6">Payment Method</h2>
+          <div class="space-y-4">
+            <!-- COD -->
+            <label class="flex items-center gap-3 p-4 border rounded-2xl cursor-pointer">
+              <input type="radio" name="pay" value="COD" checked>
+              <div class="flex-1">
+                <span class="font-medium">Cash on Delivery (COD)</span>
+              </div>
+            </label>
+
+            <!-- EasyPaisa -->
+            <label class="flex items-center gap-3 p-4 border rounded-2xl cursor-pointer">
+              <input type="radio" name="pay" value="EasyPaisa">
+              <div class="flex-1">
+                <span class="font-medium">EasyPaisa</span>
+                <p class="text-sm text-gray-600 mt-1">Transfer to: <strong>03195894880</strong></p>
+              </div>
+            </label>
+
+            <!-- JazzCash -->
+            <label class="flex items-center gap-3 p-4 border rounded-2xl cursor-pointer">
+              <input type="radio" name="pay" value="JazzCash">
+              <div class="flex-1">
+                <span class="font-medium">JazzCash</span>
+                <p class="text-sm text-gray-600 mt-1">Transfer to: <strong>03195894880</strong></p>
+              </div>
+            </label>
+          </div>
+
+          <button onclick="placeOrder()" 
+                  class="mt-10 w-full bg-[#166534] text-white py-6 text-2xl rounded-3xl">
+            Place Order • Rs. <span id="final-total">0</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Payment -->
-      <div class="bg-white p-8 rounded-3xl shadow">
-        <h2 class="text-2xl font-bold mb-6">Payment Method</h2>
-        <div class="space-y-4">
-          <label class="flex items-center gap-3 p-4 border rounded-2xl cursor-pointer"><input type="radio" name="pay" checked> Cash on Delivery (COD)</label>
-          <label class="flex items-center gap-3 p-4 border rounded-2xl cursor-pointer"><input type="radio" name="pay"> EasyPaisa</label>
-          <label class="flex items-center gap-3 p-4 border rounded-2xl cursor-pointer"><input type="radio" name="pay"> JazzCash</label>
+      <!-- Right Side: Order Summary (Sticky like Amazon/Noon) -->
+      <div class="md:col-span-5">
+        <div class="bg-white p-8 rounded-3xl shadow sticky top-8">
+          <h2 class="text-2xl font-bold mb-6">Order Summary</h2>
+          <div id="cart-summary" class="space-y-6"></div>
+          <div class="border-t pt-6 mt-6">
+            <div class="flex justify-between text-xl font-bold">
+              <span>Total</span>
+              <span>Rs. <span id="summary-total">0</span></span>
+            </div>
+          </div>
         </div>
-        <button onclick="placeOrder()" class="mt-10 w-full bg-[#166534] text-white py-6 text-2xl rounded-3xl">Place Order • Rs. <span id="final-total">0</span></button>
       </div>
     </div>
   </div>
@@ -64,6 +108,23 @@
         total += salePrice * (item.qty || 1);
       });
       document.getElementById('final-total').textContent = total;
+      document.getElementById('summary-total').textContent = total;
+    }
+
+    function renderCartSummary() {
+      const container = document.getElementById('cart-summary');
+      container.innerHTML = cart.map(item => {
+        const salePrice = item.discount > 0 ? Math.round(item.price * (1 - item.discount/100)) : item.price;
+        return `
+          <div class="flex gap-4">
+            <img src="${item.image}" class="w-16 h-16 object-cover rounded-2xl">
+            <div class="flex-1">
+              <p class="font-medium">${item.name}</p>
+              <p class="text-sm text-gray-500">Qty: ${item.qty || 1}</p>
+              <p class="text-[#166534] font-bold">Rs. ${salePrice}</p>
+            </div>
+          </div>`;
+      }).join('');
     }
 
     function placeOrder() {
@@ -78,7 +139,7 @@
 
       if (cart.length === 0) return alert("Cart is empty!");
 
-      // Deduct stock in real-time
+      // Deduct stock
       cart.forEach(cartItem => {
         const product = products.find(p => p.id === cartItem.id);
         if (product) product.stock = Math.max(0, product.stock - (cartItem.qty || 1));
@@ -103,19 +164,16 @@
       orders.unshift(order);
       localStorage.setItem('orders', JSON.stringify(orders));
 
-      // Professional message
-      alert(`✅ Your order has been received successfully!\n\nOrder ID: #${orderId}\nWe will confirm your order shortly through WhatsApp.\nThank you for shopping with IHSAN UL HAQ & SONS`);
-
-      // Open WhatsApp automatically
-      const message = `Dear ${name},\n\nYour order #${orderId} has been successfully received!\nTotal Amount: Rs. ${total}\n\nWe will confirm it shortly.\nThank you for shopping with IHSAN UL HAQ & SONS General Store.`;
-      const waLink = `https://wa.me/92${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
-      window.open(waLink, '_blank');
+      // Only message - NO auto WhatsApp
+      alert(`✅ Your order has been received successfully!\n\nOrder ID: #${orderId}\nTotal: Rs. ${total}\n\nWe will confirm your order shortly through WhatsApp.\nThank you for shopping with IHSAN UL HAQ & SONS`);
 
       localStorage.removeItem('cart');
       window.location.href = "index.html";
     }
 
+    // Initialize
     showTotal();
+    renderCartSummary();
   </script>
 </body>
 </html>
