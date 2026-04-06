@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop - IHSAN UL HAQ & SONS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/products.js"></script>
+</head>
+<body class="bg-[#f1f5f1]">
+  <!-- Navbar -->
+  <nav class="bg-[#166534] text-white sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-4xl">🛒</span>
+        <div>
+          <h1 class="text-2xl font-bold">IHSAN UL HAQ & SONS</h1>
+          <p class="text-xs -mt-1 text-green-100">General Store • Since 1990</p>
+        </div>
+      </div>
+      <div class="hidden md:flex gap-8 text-lg">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="offers.html">Offers</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <a href="cart.html" class="relative text-3xl">🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-yellow-300 text-[#166534] text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span></a>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold text-[#166534] mb-8" id="page-title">All Products</h1>
+    <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+  </div>
+
+  <script>
+    loadProducts();
+
+    function getUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        category: params.get('category'),
+        fromBanner: params.get('fromBanner')
+      };
+    }
+
+    function renderProducts(filteredProducts) {
+      const container = document.getElementById('products-grid');
+      container.innerHTML = filteredProducts.map(p => {
+        const oldPrice = p.price;
+        const newPrice = p.discount > 0 ? Math.round(p.price * (1 - p.discount/100)) : p.price;
+        const isOutOfStock = p.stock <= 0;
+        return `
+          <div class="bg-white rounded-3xl overflow-hidden shadow hover:shadow-xl transition">
+            <div class="relative">
+              <img src="${p.image}" class="w-full h-52 object-cover">
+              ${p.discount > 0 ? `<div class="absolute top-4 right-4 bg-red-500 text-white px-4 py-1 text-xs rounded-full font-bold">-${p.discount}% OFF</div>` : ''}
+            </div>
+            <div class="p-5">
+              <h3 class="font-bold text-lg">${p.name}</h3>
+              <p class="text-sm text-gray-500">${p.category}</p>
+              <div class="flex items-center gap-4 mt-4">
+                <span class="text-3xl font-bold text-[#166534]">Rs. ${newPrice}</span>
+                ${p.discount > 0 ? `<span class="text-xl line-through text-red-500">Rs. ${oldPrice}</span>` : ''}
+              </div>
+              <p class="text-xs text-gray-500 mt-3">Stock: ${p.stock}</p>
+              ${isOutOfStock ? 
+                `<p class="mt-4 text-red-600 font-bold">Currently Out of Stock</p>` : 
+                `<button onclick="addToCart(${p.id});" class="mt-6 w-full bg-[#166534] text-white py-3 rounded-2xl text-sm font-medium">Add to Cart</button>`
+              }
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      if (!product || product.stock <= 0) {
+        alert("❌ Currently Out of Stock!");
+        return;
+      }
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.push({ ...product, qty: 1 });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      alert(`${product.name} added to cart!`);
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      document.getElementById('cart-count').textContent = cart.length;
+    }
+
+    // Initialize
+    const params = getUrlParams();
+    let filtered = products;
+
+    if (params.fromBanner) {
+      const banner = JSON.parse(localStorage.getItem('banners') || '[]').find(b => b.id == params.fromBanner);
+      if (banner && banner.products && banner.products.length > 0) {
+        filtered = products.filter(p => banner.products.includes(p.id));
+        document.getElementById('page-title').innerHTML = `${banner.title} <span class="text-red-600">(${banner.discount}% OFF)</span>`;
+      }
+    } else if (params.category) {
+      filtered = products.filter(p => p.category === params.category);
+      document.getElementById('page-title').textContent = params.category;
+    }
+
+    renderProducts(filtered);
+    updateCartCount();
+  </script>
+</body>
+</html>
