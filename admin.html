@@ -12,38 +12,35 @@
 </head>
 <body class="bg-[#f1f5f1]">
 
-  <!-- ====================== PASSWORD SCREEN ====================== -->
+  <!-- Password Screen -->
   <div id="password-screen" class="fixed inset-0 bg-[#166534] flex items-center justify-center z-[100]">
     <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md text-center">
       <div class="flex justify-center mb-6">
         <span class="text-6xl">🔒</span>
       </div>
       <h2 class="text-3xl font-bold text-[#166534] mb-2">Admin Login</h2>
-      <p class="text-gray-600 mb-8">Enter your admin password to continue</p>
+      <p class="text-gray-600 mb-8">Enter your admin password</p>
       
       <input id="admin-password" type="password" placeholder="Enter Password" 
              class="w-full border-2 border-gray-300 focus:border-[#166534] p-5 rounded-2xl text-lg mb-6 outline-none">
       
       <button onclick="checkPassword()" 
-              class="w-full bg-[#166534] hover:bg-green-700 text-white py-5 rounded-2xl text-xl font-bold transition">
+              class="w-full bg-[#166534] text-white py-5 rounded-2xl text-xl font-bold">
         Login to Admin Portal
       </button>
       
-      <p id="password-error" class="text-red-600 mt-4 font-medium hidden">❌ Incorrect Password! Try again.</p>
+      <p id="password-error" class="text-red-600 mt-4 font-medium hidden">❌ Incorrect Password!</p>
     </div>
   </div>
 
-  <!-- ====================== MAIN ADMIN CONTENT ====================== -->
+  <!-- Main Admin Content -->
   <div id="admin-content" class="hidden">
 
     <nav class="bg-[#166534] text-white p-4 shadow-md">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
         <h1 class="text-3xl font-bold">👷 Admin Portal</h1>
-        <div class="flex items-center gap-4">
-          <button onclick="changeAdminPassword()" 
-                  class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-3 rounded-2xl font-medium transition">
-            Change Password
-          </button>
+        <div>
+          <button onclick="changeAdminPassword()" class="bg-yellow-400 text-black px-6 py-3 rounded-2xl mr-4">Change Password</button>
           <a href="index.html" class="text-white hover:underline text-lg">← Back to Website</a>
         </div>
       </div>
@@ -62,7 +59,6 @@
         <h2 class="text-3xl font-bold text-[#166534] mb-6">Products Management</h2>
         <div id="stock-alerts" class="bg-yellow-100 border border-yellow-400 p-4 rounded-3xl mb-8 text-sm"></div>
 
-        <!-- Bulk Upload -->
         <div class="bg-white p-6 rounded-3xl shadow mb-10">
           <h3 class="font-bold mb-4 text-xl">Bulk Products Upload</h3>
           <div class="flex gap-4">
@@ -74,7 +70,6 @@
           </div>
         </div>
 
-        <!-- Add Single Product -->
         <div class="bg-white p-6 rounded-3xl shadow mb-10">
           <h3 class="font-bold mb-4 text-xl">Add Single Product</h3>
           <div class="grid md:grid-cols-2 gap-4">
@@ -190,8 +185,8 @@
     let currentEditBannerId = null;
     let banners = JSON.parse(localStorage.getItem('banners')) || [];
 
-    // ==================== PASSWORD SYSTEM ====================
-    let adminPassword = "admin123";   // ← Yahan apna password change kar sakte ho
+    // Password System
+    let adminPassword = "admin123";
 
     function checkPassword() {
       const entered = document.getElementById('admin-password').value.trim();
@@ -206,12 +201,10 @@
     }
 
     function changeAdminPassword() {
-      const newPass = prompt("Enter new admin password (minimum 4 characters):");
+      const newPass = prompt("Enter new admin password:");
       if (newPass && newPass.length >= 4) {
         adminPassword = newPass;
-        alert(`✅ Password changed successfully!\n\nNew Password: ${newPass}\n\nNext time use this password.`);
-      } else if (newPass) {
-        alert("Password must be at least 4 characters long.");
+        alert(`✅ Password changed!\nNew password: ${newPass}`);
       }
     }
 
@@ -222,7 +215,7 @@
       renderProductCheckboxes('product-checkbox-list');
     }
 
-    // ==================== TAB SYSTEM ====================
+    // Tab System
     function showTab(n) {
       for (let i = 0; i < 4; i++) {
         const section = document.getElementById('section-' + i);
@@ -233,7 +226,7 @@
       if (n === 3) renderActiveBanners();
     }
 
-    // ==================== ALL FUNCTIONS ====================
+    // All your previous functions (complete)
     function populateCategoryDropdown(selectId, selected = "") {
       const select = document.getElementById(selectId);
       select.innerHTML = categories.map(cat => 
@@ -518,7 +511,6 @@
       alert("✅ Banner Deleted!");
     }
 
-    // ==================== ORDERS SECTION ====================
     function renderOrders() {
       let orders = JSON.parse(localStorage.getItem('orders')) || [];
       const container = document.getElementById('orders-list');
@@ -584,13 +576,12 @@
       renderOrders();
     }
 
-    // ==================== INITIALIZE ====================
+    // Initialize
     window.onload = function() {
       document.getElementById('password-screen').classList.remove('hidden');
       document.getElementById('admin-content').classList.add('hidden');
     };
 
-    // Enter key support for password
     document.getElementById('admin-password').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') checkPassword();
     });
